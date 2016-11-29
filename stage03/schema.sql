@@ -2,11 +2,10 @@
  * BD Instant Office
  * BD225179 16'17
  *
- * @author Rui Ventura (ist181045)
- * @author Diogo Freitas (ist181586)
- * @author Sara Azinhal (ist181700)
+ * @author Corpo Docente de BD225179 16'17
  */
 
+/* Drop tables, if they exist (rebuild schema) */
 DROP TABLE IF EXISTS Estado;
 DROP TABLE IF EXISTS Paga;
 DROP TABLE IF EXISTS Aluga;
@@ -21,26 +20,26 @@ DROP TABLE IF EXISTS Edificio;
 DROP TABLE IF EXISTS Fiscal;
 DROP TABLE IF EXISTS User;
 
-
-CREATE TABLE User VALUES (
+/* Start building */
+CREATE TABLE User (
   nif      VARCHAR(9)   NOT NULL UNIQUE,
   nome     VARCHAR(80)  NOT NULL,
   telefone VARCHAR(26)  NOT NULL,
   PRIMARY KEY(nif)
 );
 
-CREATE TABLE Fiscal VALUES (
+CREATE TABLE Fiscal (
   id      INT          NOT NULL UNIQUE,
   empresa VARCHAR(255) NOT NULL,
   PRIMARY KEY(id)
 );
 
-CREATE TABLE Edificio VALUES (
+CREATE TABLE Edificio (
   morada VARCHAR(255) NOT NULL UNIQUE,
   PRIMARY KEY(morada)
 );
 
-CREATE TABLE Alugavel VALUES (
+CREATE TABLE Alugavel (
   morada VARCHAR(255) NOT NULL,
   codigo VARCHAR(255) NOT NULL,
   foto   VARCHAR(255) NOT NULL,
@@ -48,80 +47,72 @@ CREATE TABLE Alugavel VALUES (
   FOREIGN KEY(morada) REFERENCES Edificio(morada)
 );
 
-CREATE TABLE Arrenda VALUES (
+CREATE TABLE Arrenda (
   morada VARCHAR(255) NOT NULL,
   codigo VARCHAR(255) NOT NULL,
-  nif    VARCHAR(9)   NOT NULL.
+  nif    VARCHAR(9)   NOT NULL,
   PRIMARY KEY(morada, codigo),
   FOREIGN KEY(morada, codigo) REFERENCES Alugavel(morada, codigo),
   FOREIGN KEY(nif) REFERENCES User(nif)
 );
 
-CREATE TABLE Fiscaliza VALUES (
+CREATE TABLE Fiscaliza (
   id     INT          NOT NULL,
   morada VARCHAR(255) NOT NULL,
   codigo VARCHAR(255) NOT NULL,
   PRIMARY KEY(id, morada, codigo),
   FOREIGN KEY(id) REFERENCES Fiscal(id),
-  FOREIGN KEY(morada, codigo) REFERENCES Arrenda(morada, codigo)
-);
+  FOREIGN KEY(morada, codigo) REFERENCES Arrenda(morada, codigo));
 
-CREATE TABLE Espaco VALUES (
+CREATE TABLE Espaco (
   morada VARCHAR(255) NOT NULL,
   codigo VARCHAR(255) NOT NULL,
   PRIMARY KEY(morada, codigo),
-  FOREIGN KEY(morada, codigo) REFERENCES Alugavel(morada, codigo)
-);
+  FOREIGN KEY(morada, codigo) REFERENCES Alugavel(morada, codigo));
 
-CREATE TABLE Posto VALUES (
+CREATE TABLE Posto (
   morada        VARCHAR(255) NOT NULL,
   codigo        VARCHAR(255) NOT NULL,
   codigo_espaco VARCHAR(255) NOT NULL,
   PRIMARY KEY(morada, codigo),
   FOREIGN KEY(morada, codigo) REFERENCES Alugavel(morada, codigo),
-  FOREIGN KEY(morada, codigo_espaco) REFERENCES Espaco(morada, codigo)
-);
+  FOREIGN KEY(morada, codigo_espaco) REFERENCES Espaco(morada, codigo));
 
-CREATE TABLE Oferta VALUES (
-  morada        VARCHAR(255)  NOT NULL,
-  codigo        NUMERIC(20)   NOT NULL,
-  data_inicio   DATE          NOT NULL,
-  data_fim      DATE          NOT NULL,
-  tarifa        DECIMAL(19,4) NOT NULL,
-  PRIMARY KEY(morada, codigo),
-  FOREIGN KEY(morada, codigo) REFERENCES Alugavel(morada, codigo),
-);
+CREATE TABLE Oferta (
+  morada      VARCHAR(255)  NOT NULL,
+  codigo      VARCHAR(255)  NOT NULL,
+  data_inicio DATE          NOT NULL,
+  data_fim    DATE          NOT NULL,
+  tarifa      NUMERIC(19,4) NOT NULL,
+  PRIMARY KEY(morada, codigo, data_inicio),
+  FOREIGN KEY(morada, codigo) REFERENCES Alugavel(morada, codigo));
 
-CREATE TABLE Reserva VALUES (
+CREATE TABLE Reserva (
   numero VARCHAR(255) NOT NULL UNIQUE,
-  PRIMARY KEY(numero)
-)
+  PRIMARY KEY(numero));
 
-CREATE TABLE Aluga VALUES (
-  morada        VARCHAR(255)  NOT NULL,
-  codigo        NUMERIC(20)   NOT NULL,
-  data_inicio   DATE          NOT NULL,
-  nif           VARCHAR(9)    NOT NULL,
-  numero        VARCHAR(255)  NOT NULL,
+CREATE TABLE Aluga (
+  morada      VARCHAR(255) NOT NULL,
+  codigo      VARCHAR(255) NOT NULL,
+  data_inicio DATE         NOT NULL,
+  nif         VARCHAR(9)   NOT NULL,
+  numero      VARCHAR(255) NOT NULL,
   PRIMARY KEY(morada, codigo, data_inicio, nif, numero),
   FOREIGN KEY(morada, codigo, data_inicio)
     REFERENCES Oferta(morada, codigo, data_inicio),
   FOREIGN KEY(nif) REFERENCES User(nif),
-  FOREIGN KEY(numero) REFERENCES Reserva(numero)
-);
+  FOREIGN KEY(numero) REFERENCES Reserva(numero));
 
-CREATE TABLE Paga VALUES (
+CREATE TABLE Paga (
   numero VARCHAR(255) NOT NULL UNIQUE,
   data   TIMESTAMP    NOT NULL,
   metodo VARCHAR(255) NOT NULL,
   PRIMARY KEY(numero),
-  FOREIGN KEY(numero) REFERENCES Reserva(numero)
-);
+  FOREIGN KEY(numero) REFERENCES Reserva(numero));
 
-CREATE TABLE Estado VALUES (
+CREATE TABLE Estado (
   numero     VARCHAR(255) NOT NULL,
   time_stamp TIMESTAMP    NOT NULL,
   estado     VARCHAR(255) NOT NULL,
   PRIMARY KEY(numero, time_stamp),
-  FOREIGN KEY(numero) REFERENCES Reserva(numero)
-);
+  FOREIGN KEY(numero) REFERENCES Reserva(numero));
