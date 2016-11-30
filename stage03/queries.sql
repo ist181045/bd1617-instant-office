@@ -10,30 +10,30 @@
 
 -- a) Quais os espaços com postos que nunca foram alugados?
 
-select distinct morada, codigo_espaco
-from Posto
-where (morada, codigo) not in (
-  select distinct morada, codigo
-  from Aluga
+SELECT distinct morada, codigo_espaco
+FROM Posto
+WHERE (morada, codigo) NOT IN (
+  SELECT distinct morada, codigo
+  FROM Aluga
 );
 
 
 
 -- b) Quais edifícios com um número de reservas superior à média?
 
-select distinct morada
-from (
-  select distinct morada, count(1) as c1
-  from Aluga
-  group by morada
-) as A
-where c1 > (
-  select AVG(c2)
-  from (
-    select distinct morada, count(1) as c2
-    from Aluga
-    group by morada
-  ) as Avg
+SELECT distinct morada
+FROM (
+  SELECT distinct morada, count(1) AS c1
+  FROM Aluga
+  GROUP BY morada
+) AS A
+WHERE c1 > (
+  SELECT AVG(c2)
+  FROM (
+    SELECT distinct morada, count(1) AS c2
+    FROM Aluga
+    GROUP BY morada
+  ) AS Avg
 );
 
 
@@ -41,15 +41,15 @@ where c1 > (
 -- c) Quais utilizadores cujos alugáveis foram fiscalizados sempre pelo mesmo
 --    fiscal?
 
-select distinct nif, nome
-from User
-where (nif, 1) in (
-  select distinct nif, count(1) as c
-  from (
-    select distinct nif, id
-    from Arrenda natural join Fiscaliza
-  ) as R
-  group by nif
+SELECT distinct nif, nome
+FROM User
+WHERE (nif, 1) in (
+  SELECT distinct nif, count(1) AS c
+  FROM (
+    SELECT distinct nif, id
+    FROM Arrenda NATURAL JOIN Fiscaliza
+  ) AS R
+  GROUP BY nif
 );
 
 
@@ -67,46 +67,46 @@ where (nif, 1) in (
 --    alugados? (Por alugado, entende-se um posto de trabalho que tenha pelo
 --    menos uma oferta aceite, independentemente das suas datas)
 
--- e.1) Com natural join
+-- e.1) Com NATURAL JOIN
 
-select distinct morada, codigo_espaco as codigo
-from (
-  select distinct morada, codigo_espaco, count(1) as c
-  from Posto
-    natural join Aluga
-    natural join (
-      select distinct numero
-      from Estado
-      where estado = 'Aceite'
-    ) as R
-  group by morada, codigo_espaco
-) as A
-  natural join (
-    select distinct morada, codigo_espaco, count(1) as c
-    from Posto
-    group by morada, codigo_espaco
-) as T;
+SELECT distinct morada, codigo_espaco AS codigo
+FROM (
+  SELECT distinct morada, codigo_espaco, count(1) AS c
+  FROM Posto
+    NATURAL JOIN Aluga
+    NATURAL JOIN (
+      SELECT distinct numero
+      FROM Estado
+      WHERE estado = 'Aceite'
+    ) AS R
+  GROUP BY morada, codigo_espaco
+) AS A
+  NATURAL JOIN (
+    SELECT distinct morada, codigo_espaco, count(1) AS c
+    FROM Posto
+    GROUP BY morada, codigo_espaco
+) AS T;
 
 -- e.2) Com multiplicação (join explícito)
 
-select distinct PT.morada, PT.codigo_espaco as codigo
-from (
-  select distinct P1.morada, P1.codigo_espaco, count(1) as c
-  from Posto P1, Aluga A, (
-    select distinct E.numero
-    from Estado E
-    where E.estado = 'Aceite'
- ) as E
-  where P1.morada = A.morada
+SELECT distinct PT.morada, PT.codigo_espaco AS codigo
+FROM (
+  SELECT distinct P1.morada, P1.codigo_espaco, count(1) AS c
+  FROM Posto P1, Aluga A, (
+    SELECT distinct E.numero
+    FROM Estado E
+    WHERE E.estado = 'Aceite'
+ ) AS E
+  WHERE P1.morada = A.morada
     and P1.codigo = A.codigo
     and E.numero = A.numero
-  group by P1.morada, P1.codigo_espaco
-) as PA,
+  GROUP BY P1.morada, P1.codigo_espaco
+) AS PA,
 (
-  select distinct P2.morada, P2.codigo_espaco, count(1) as c
-  from Posto P2
-  group by P2.morada, P2.codigo_espaco
-) as PT
-where PT.c = PA.c
+  SELECT distinct P2.morada, P2.codigo_espaco, count(1) AS c
+  FROM Posto P2
+  GROUP BY P2.morada, P2.codigo_espaco
+) AS PT
+WHERE PT.c = PA.c
   and PT.morada = PA.morada
   and PT.codigo_espaco = PT.codigo_espaco;
