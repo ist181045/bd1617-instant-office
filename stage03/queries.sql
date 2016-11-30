@@ -21,7 +21,7 @@ where (P.morada, P.codigo) not in (
 
 -- b) Quais edifícios com um número de reservas superior à média?
 
-select M.morada
+select distinct M.morada
 from (
   select distinct morada, count(1) as c
   from Aluga
@@ -41,7 +41,7 @@ where M.c > (
 -- c) Quais utilizadores cujos alugáveis foram fiscalizados sempre pelo mesmo
 --    fiscal?
 
-select nome
+select distinct nome
 from User U
 where (U.nif, 1) in (
   select distinct nif, count(1) as c
@@ -51,3 +51,36 @@ where (U.nif, 1) in (
   ) as R
   group by nif
 );
+
+-- d) Qual o montante total realizado (pago) por cada espaço durante o ano de
+--    2016? (Assume-se que a tarifa indicada na oferta é diária. Devem ser
+--    considerados os espaços em que o espaço foi alugado totalmente ou por
+--    postos)
+
+-- TODO: This query
+
+
+
+-- e) Quais os espaços de trabalho cujos postos neles contidos forma todos
+--    alugados? (Por alugado, entende-se um posto de trabalho que tenha pelo
+--    menos uma oferta aceite, independentemente das suas datas)
+
+select distinct morada, codigo_espaco
+from (
+  select distinct morada, codigo_espaco, count(1) as c
+  from Posto
+    natural join Aluga
+    natural join (
+      select distinct numero
+      from Estado
+      where estado = 'Aceite'
+    ) as R
+  group by morada, codigo_espaco
+) as A
+  natural join (
+    select distinct morada, codigo_espaco, count(1) as c
+    from Posto
+    group by morada, codigo_espaco
+) as T;
+
+-- B
