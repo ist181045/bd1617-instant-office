@@ -64,7 +64,6 @@ END //
 DELIMITER ;
 
 
-
 /** 
 
 Estado actual de todas as reservas pagas:
