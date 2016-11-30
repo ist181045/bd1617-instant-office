@@ -13,15 +13,15 @@
 select distinct P.morada, P.codigo_espaco
 from Posto P
 where (P.morada, P.codigo) not in (
-  select distinct A.morada, A.codigo
-  from Aluga A
+  select distinct morada, codigo
+  from Aluga
 );
 
 
 
 -- b) Quais edifícios com um número de reservas superior à média?
 
-select morada
+select M.morada
 from (
   select distinct morada, count(1) as c
   from Aluga
@@ -34,4 +34,20 @@ where M.c > (
     from Aluga
     group by morada
   ) as R
+);
+
+
+
+-- c) Quais utilizadores cujos alugáveis foram fiscalizados sempre pelo mesmo
+--    fiscal?
+
+select nome
+from User U
+where (U.nif, 1) in (
+  select distinct nif, count(1) as c
+  from (
+    select distinct nif, id
+    from Arrenda natural join Fiscaliza
+  ) as R
+  group by nif
 );
