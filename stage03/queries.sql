@@ -10,9 +10,9 @@
 
 -- a) Quais os espaços com postos que nunca foram alugados?
 
-select distinct P.morada, P.codigo_espaco
-from Posto P
-where (P.morada, P.codigo) not in (
+select distinct morada, codigo_espaco
+from Posto
+where (morada, codigo) not in (
   select distinct morada, codigo
   from Aluga
 );
@@ -21,19 +21,19 @@ where (P.morada, P.codigo) not in (
 
 -- b) Quais edifícios com um número de reservas superior à média?
 
-select distinct M.morada
+select distinct morada
 from (
-  select distinct morada, count(1) as c
+  select distinct morada, count(1) as c1
   from Aluga
   group by morada
-) as M
-where M.c > (
-  select AVG(R.c)
+) as A
+where c1 > (
+  select AVG(c2)
   from (
-    select distinct morada, count(1) as c
+    select distinct morada, count(1) as c2
     from Aluga
     group by morada
-  ) as R
+  ) as Avg
 );
 
 
@@ -41,9 +41,9 @@ where M.c > (
 -- c) Quais utilizadores cujos alugáveis foram fiscalizados sempre pelo mesmo
 --    fiscal?
 
-select distinct nome
-from User U
-where (U.nif, 1) in (
+select distinct nif, nome
+from User
+where (nif, 1) in (
   select distinct nif, count(1) as c
   from (
     select distinct nif, id
