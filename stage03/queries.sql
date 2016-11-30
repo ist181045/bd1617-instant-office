@@ -91,22 +91,22 @@ from (
 
 select distinct PT.morada, PT.codigo_espaco as codigo
 from (
- select distinct P1.morada, P1.codigo_espaco, count(1) as c
- from Posto P1, Aluga A, (
-   select distinct E.numero
-   from Estado E
-   where E.estado = 'Aceite'
+  select distinct P1.morada, P1.codigo_espaco, count(1) as c
+  from Posto P1, Aluga A, (
+    select distinct E.numero
+    from Estado E
+    where E.estado = 'Aceite'
  ) as E
- where P1.morada = A.morada
-   and P1.codigo = A.codigo
-   and E.numero = A.numero
- group by P1.morada, P1.codigo_espaco
+  where P1.morada = A.morada
+    and P1.codigo = A.codigo
+    and E.numero = A.numero
+  group by P1.morada, P1.codigo_espaco
 ) as PA,
 (
- select distinct P2.morada, P2.codigo_espaco, count(1) as c
- from Posto P2
- group by P2.morada, P2.codigo_espaco
+  select distinct P2.morada, P2.codigo_espaco, count(1) as c
+  from Posto P2
+  group by P2.morada, P2.codigo_espaco
 ) as PT
 where PT.c = PA.c
- and PT.morada = PA.morada
- and PT.codigo_espaco = PT.codigo_espaco;
+  and PT.morada = PA.morada
+  and PT.codigo_espaco = PT.codigo_espaco;
