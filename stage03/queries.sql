@@ -59,11 +59,24 @@ WHERE (nif, 1) in (
 --    considerados os espaços em que o espaço foi alugado totalmente ou por
 --    postos)
 
--- TODO: This query
+SELECT morada, codigo_espaco, 
+  SUM(tarifa * DATEDIFF(data_fim, data_inicio)) AS montante_total
+FROM Oferta
+  NATURAL JOIN Aluga
+  NATURAL JOIN Paga
+  NATURAL JOIN (
+    SELECT morada, codigo, codigo_espaco
+    FROM Alugavel NATURAL JOIN Posto
+    UNION
+    SELECT morada, codigo, codigo AS codigo_espaco
+    FROM Alugavel NATURAL JOIN Espaco
+  ) AS A
+WHERE YEAR(data) = 2016
+GROUP BY morada, codigo_espaco;
 
 
 
--- e) Quais os espaços de trabalho cujos postos neles contidos forma todos
+-- e) Quais os espaços de trabalho cujos postos neles contidos foram todos
 --    alugados? (Por alugado, entende-se um posto de trabalho que tenha pelo
 --    menos uma oferta aceite, independentemente das suas datas)
 
@@ -71,23 +84,23 @@ WHERE (nif, 1) in (
 
 SELECT DISTINCT morada, codigo_espaco AS codigo
 FROM (
-  SELECT DISTINCT morada, codigo_espaco, count(1) AS c
+  SELECT morada, codigo_espaco, count(1) AS c
   FROM Posto
     NATURAL JOIN Aluga
     NATURAL JOIN (
       SELECT DISTINCT numero
-      FROM Estado
+      FROM Estado 
       WHERE estado = 'Aceite'
     ) AS R
   GROUP BY morada, codigo_espaco
 ) AS A
   NATURAL JOIN (
-    SELECT DISTINCT morada, codigo_espaco, count(1) AS c
+    SELECT morada, codigo_espaco, count(1) AS c
     FROM Posto
     GROUP BY morada, codigo_espaco
 ) AS T;
 
--- e.2) Com multiplicação (join explícito)
+-- e.2) Com multiplicação/produto (join explícito)
 
 SELECT DISTINCT PT.morada, PT.codigo_espaco AS codigo
 FROM (
