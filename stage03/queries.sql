@@ -52,6 +52,8 @@ where (U.nif, 1) in (
   group by nif
 );
 
+
+
 -- d) Qual o montante total realizado (pago) por cada espaço durante o ano de
 --    2016? (Assume-se que a tarifa indicada na oferta é diária. Devem ser
 --    considerados os espaços em que o espaço foi alugado totalmente ou por
@@ -65,7 +67,9 @@ where (U.nif, 1) in (
 --    alugados? (Por alugado, entende-se um posto de trabalho que tenha pelo
 --    menos uma oferta aceite, independentemente das suas datas)
 
-select distinct morada, codigo_espaco
+-- e.1) Com natural join
+
+select distinct morada, codigo_espaco as codigo
 from (
   select distinct morada, codigo_espaco, count(1) as c
   from Posto
@@ -83,4 +87,26 @@ from (
     group by morada, codigo_espaco
 ) as T;
 
--- B
+-- e.2) Com multiplicação (join explícito)
+
+select distinct PT.morada, PT.codigo_espaco as codigo
+from (
+ select distinct P1.morada, P1.codigo_espaco, count(1) as c
+ from Posto P1, Aluga A, (
+   select distinct E.numero
+   from Estado E
+   where E.estado = 'Aceite'
+ ) as E
+ where P1.morada = A.morada
+   and P1.codigo = A.codigo
+   and E.numero = A.numero
+ group by P1.morada, P1.codigo_espaco
+) as PA,
+(
+ select distinct P2.morada, P2.codigo_espaco, count(1) as c
+ from Posto P2
+ group by P2.morada, P2.codigo_espaco
+) as PT
+where PT.c = PA.c
+ and PT.morada = PA.morada
+ and PT.codigo_espaco = PT.codigo_espaco;
