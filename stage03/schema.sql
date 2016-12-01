@@ -2,7 +2,7 @@
  * BD Instant Office
  * BD225179 16'17
  *
- * @author Corpo Docente de BD225179 16'17
+ * @author Corpo Docente de BD225179
  */
 
 /* Drop tables, if they exist (rebuild schema) */
