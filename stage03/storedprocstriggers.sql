@@ -64,16 +64,70 @@ END //
 DELIMITER ;
 
 
-/** 
 
-Estado actual de todas as reservas pagas:
+-- OTHER TRIGGERS
 
-SELECT numero, estado
-FROM Paga
-  NATURAL JOIN Estado
-  NATURAL JOIN (
-   SELECT numero, MAX(time_stamp) AS time_stamp
-   FROM Estado
-   GROUP BY numero ) AS R;
- 
- */
+DELIMITER //
+
+CREATE TRIGGER TRG_Espaco_insert_alugavel
+BEFORE INSERT ON Espaco
+FOR EACH ROW
+BEGIN
+
+  INSERT INTO Alugavel(morada, codigo) VALUES(NEW.morada, NEW.codigo);
+
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER TRG_Posto_insert_alugavel
+BEFORE INSERT ON Posto
+FOR EACH ROW
+BEGIN
+
+  INSERT INTO Alugavel(morada, codigo) VALUES(NEW.morada, NEW.codigo);
+
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER TRG_Paga_adicinar_estado
+BEFORE INSERT ON Paga
+FOR EACH ROW
+BEGIN
+
+  INSERT INTO Estado(numero, estado) VALUES(NEW.numero, 'Paga');
+
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER TRG_Reserva_estado_inicial
+AFTER INSERT ON Reserva
+FOR EACH ROW
+BEGIN
+
+  INSERT INTO Estado(numero, estado) VALUES(NEW.numero, 'Pendente');
+
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER TRG_Aluga_reserva_sobre_oferta
+BEFORE INSERT ON Aluga
+FOR EACH ROW
+BEGIN
+
+  INSERT INTO Reserva(numero) VALUES(NEW.numero);
+
+END //
+
+DELIMITER ;
