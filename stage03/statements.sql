@@ -27,27 +27,36 @@ INSERT INTO Posto(morada, codigo, codigo_espaco) VALUES( ? );
 
 DELETE FROM Alugavel WHERE morada = ? AND codigo = ? ;
 
+
+
 -- b) Criar/Remover Ofertas
 
 INSERT INTO Oferta(morada, codigo, data_inicio, data_fim, tarifa) VALUES( ? );
 
-DELETE FROM Oferta WHERE morada = ? 
-					AND codigo = ?
-					AND data_inicio = ?
-					AND data_fim = ?
-					AND tarifa = ?
+DELETE FROM Oferta
+WHERE morada = ?
+  AND codigo = ?
+  AND data_inicio = ?
+  AND data_fim = ?
+  AND tarifa = ?
+
+
 
 -- c) Criar reservas sobre Ofertas
 
 INSERT INTO Aluga(morada, codigo, data_inicio, numero, nif) VALUES( ? );
 
+
+
 -- d) Pagar reservas
 
 INSERT INTO Paga(numero, metodo) VALUES( ? );
 
+
+
 -- e) Para um Edificio, mostrar o total realizado para cada espaco
 
-SELECT codigo_espaco, 
+SELECT codigo_espaco,
   SUM(tarifa * DATEDIFF(data_fim, data_inicio)) AS montante_total
 FROM Oferta
   NATURAL JOIN Aluga
