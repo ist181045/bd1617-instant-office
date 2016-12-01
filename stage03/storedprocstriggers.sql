@@ -131,3 +131,56 @@ BEGIN
 END //
 
 DELIMITER ;
+
+
+DELIMITER //
+
+CREATE TRIGGER TRG_Edificio_delete
+BEFORE DELETE ON Edificio
+FOR EACH ROW
+BEGIN
+
+  DELETE FROM Espaco Where morada = old.morada;
+
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER TRG_Espaco_delete_posto
+BEFORE DELETE ON Espaco
+FOR EACH ROW
+BEGIN
+
+  DELETE FROM Posto Where morada = old.morada AND codigo_espaco = old.codigo;
+
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER TRG_Espaco_delete_alugavel
+AFTER DELETE ON Espaco
+FOR EACH ROW
+BEGIN
+
+  DELETE FROM Alugavel Where morada = old.morada and codigo = old.codigo;
+
+END //
+
+DELIMITER ;
+
+DELIMITER //
+
+CREATE TRIGGER TRG_Posto_delete_alugavel
+AFTER DELETE ON Posto
+FOR EACH ROW
+BEGIN
+
+  DELETE FROM Alugavel Where morada = old.morada and codigo = old.codigo;
+
+END //
+
+DELIMITER ;
