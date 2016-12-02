@@ -26,6 +26,12 @@
         $objs = $result->fetchAll(PDO::FETCH_ASSOC);
         $result = null;
 
+        if (isset($_REQUEST['morada'])) {
+          $stmt = $db->prepare("DELETE FROM Espaco
+            WHERE morada = ? AND codigo = ?");
+          $stmt->execute(array($_REQUEST['morada'], $_REQUEST['codigo']));
+        }
+
         echo "<table border=\"2\">";
         echo "<thead><tr>";
         foreach(array_keys($objs[0]) as $key)
