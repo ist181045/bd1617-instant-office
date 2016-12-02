@@ -3,6 +3,9 @@
  * BD225179 16'17
  *
  * @author Corpo Docente de BD225179
+ * @author Rui Ventura (ist181045)
+ * @author Diogo Freitas (ist181586)
+ * @author Sara Azinhal (ist181700)
  */
 
 /* Drop tables, if they exist (rebuild schema) */
