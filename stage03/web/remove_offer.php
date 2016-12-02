@@ -23,11 +23,21 @@
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         if (isset($_REQUEST['morada'])) {
-          $stmt = $db->prepare("DELETE FROM Oferta
-            WHERE morada = ? AND codigo = ? AND data_inicio = ? AND data_fim = ? AND tarifa = ?");
-          $stmt->execute(array($_REQUEST['morada'], $_REQUEST['codigo'], $_REQUEST['data_inicio'], $_REQUEST['data_fim'], $_REQUEST['tarifa']));
+          try {
+            $db->beginTransaction();
 
-          echo "<p>Remoção feita com sucesso!</p>";
+            $stmt = $db->prepare("DELETE FROM Oferta
+              WHERE morada = ? AND codigo = ? AND data_inicio = ? AND data_fim = ? AND tarifa = ?");
+            $stmt->execute(array($_REQUEST['morada'], $_REQUEST['codigo'], $_REQUEST['data_inicio'], $_REQUEST['data_fim'], $_REQUEST['tarifa']));
+            $stmt = null;
+
+            echo "<p>Remoção feita com sucesso!</p>";
+
+            $db->commit();
+          } catch (PDOException $e) {
+            $db->rollBack();
+            echo "<p>PDOException: {$e->getMessage()}</p>";
+          }
         }
 
         $result = $db->query("SELECT * FROM Oferta");

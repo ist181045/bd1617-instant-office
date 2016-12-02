@@ -25,10 +25,11 @@
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
           try {
             $db->beginTransaction();
-            $ins_alugavel = $db->prepare("INSERT INTO Oferta VALUES (?, ?, ?, ?, ?)");
 
-            $ins_alugavel->execute(
+            $stmt = $db->prepare("INSERT INTO Oferta VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute(
               array($_REQUEST['morada'], $_REQUEST['codigo'], $_REQUEST['data_inicio'], $_REQUEST['data_fim'], $_REQUEST['tarifa']));
+            $stmt = null;
 
             echo "<p>Inserção feita com sucesso!</p>";
 
