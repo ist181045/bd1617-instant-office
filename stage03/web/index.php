@@ -20,28 +20,28 @@
       <li>Ofertas</li>
       <ul>
         <li><a href="create_offer.php">Criar</a></li>
-        <li><a href="remove_offer.php?q=oferta">Remover</a></li>
+        <li><a href="remove_offer.php">Remover</a></li>
       </ul>
       <li>Reservas</li>
       <ul>
-        <li><a href="create_reservation.php?q=reserva">Criar</a></li>
-        <li><a href="remove_reservation.php?q=reserva">Remover</a></li>
+        <li><a href="create_reservation.php">Criar</a></li>
+        <li><a href="remove_reservation.php">Remover</a></li>
       </ul>
       <li>Edifício</li>
       <ul>
-        <li><a href="insert_building.php?q=edificio">Inserir</a></li>
-        <li><a href="remove_building.php?q=edificio">Remover</a></li>
+        <li><a href="insert_building.php">Inserir</a></li>
+        <li><a href="remove_building.php">Remover</a></li>
         <li><a href="amount.php">Consultar total realizado por espaço</a></li>
       </ul>
       <li>Espaço</li>
       <ul>
-        <li><a href="insert_space.php?q=espaco">Inserir</a></li>
-        <li><a href="remove_space.php?q=espaco">Remover</a></li>
+        <li><a href="insert_space.php">Inserir</a></li>
+        <li><a href="remove_space.php">Remover</a></li>
       </ul>
       <li>Posto</li>
       <ul>
-        <li><a href="insert_office.php?q=posto">Inserir</a></li>
-        <li><a href="insert_office.php?q=posto">Remover</a></li>
+        <li><a href="insert_office.php">Inserir</a></li>
+        <li><a href="insert_office.php">Remover</a></li>
       </ul>
     </ul>
 
