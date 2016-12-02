@@ -50,6 +50,10 @@
 
         echo "</tbody></table>";
 
+        if (isset($_REQUEST['morada'])) {
+          echo "<p>Remoção feita com sucesso!</p>";
+        }
+
         $db = null;
 
       } catch (PDOException $e) {
