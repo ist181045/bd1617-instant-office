@@ -25,7 +25,7 @@
         $result = null;
 
         if (isset($_REQUEST['morada'])) {
-          $stmt = $db->prepare("SELECT codigo_espaco as codigo,
+          $result = $db->prepare("SELECT codigo_espaco as codigo,
             SUM(tarifa * DATEDIFF(data_fim, data_inicio)) AS `montante total`
           FROM Oferta
             NATURAL JOIN Aluga
@@ -40,10 +40,8 @@
           WHERE morada = :morada
           GROUP BY codigo_espaco;");
 
-          $stmt->bindParam(":morada", $_REQUEST['morada'], PDO::PARAM_STR);
-          $stmt->execute();
-          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+          $result->bindParam(":morada", $_REQUEST['morada'], PDO::PARAM_STR);
+          $result->execute();
         } else {
           $result = $db->query("SELECT * FROM Edificio");
         }
@@ -81,7 +79,7 @@
 
      ?>
     <br>
-    <a href=\"index.php?$str\">Voltar ao Inicio</a>";
+    <a href="index.php">Voltar ao Inicio</a>
     <br><br>
     <footer>Copyright &copy; 2016 <?php echo date("Y") > 2016 ? " - ".date("Y") : ""; ?></footer>
   </body>
