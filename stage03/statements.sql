@@ -17,10 +17,12 @@ DELETE FROM Edificio WHERE morada = ? ;
 
 -- Inserir Espacos
 
+INSERT INTO Alugavel(morada, codigo, foto) VALUES( ? );
 INSERT INTO Espaco(morada, codigo) VALUES( ? );
 
 -- Inserir Postos de trabalho
 
+INSERT INTO Alugavel(morada, codigo, foto) VALUES( ? );
 INSERT INTO Posto(morada, codigo, codigo_espaco) VALUES( ? );
 
 -- Remover Espacos ou Postos de trabalho
