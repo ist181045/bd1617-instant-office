@@ -60,7 +60,7 @@
           if(isset($_REQUEST['morada'])) {
             $str = "morada={$obj['morada']}";
             echo "<td>{$obj['codigo']}</td>";
-            echo "<td>{$obj['montante_total']}</td>";
+            echo "<td>{$obj['montante total']}</td>";
           } else {
             $str = "morada={$obj['morada']}";
             echo "<td>{$obj['morada']}</td>";
