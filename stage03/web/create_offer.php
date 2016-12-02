@@ -37,7 +37,7 @@
           echo "<tr>";
           echo "<td>{$obj['morada']}</td>";
           echo "<td>{$obj['codigo']}</td>";
-          echo "<td><a href=\"form_oferta.php?$str\">Criar Oferta</a></td>";
+          echo "<td><a href=\"form_offer.php?$str\">Criar Oferta</a></td>";
           echo "</tr>";
         }
 
