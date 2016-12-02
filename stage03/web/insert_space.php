@@ -11,10 +11,10 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Instant Office - Inserir Espaco</title>
+    <title>Instant Office - Escolha um Edifício</title>
   </head>
   <body>
-    <h1>Inserir Espaco</h1>
+    <h1>Escolha um Edifício</h1>
     <?php
       include_once("secret/login.php");
 
