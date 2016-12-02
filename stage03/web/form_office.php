@@ -34,6 +34,7 @@
             $ins_posto->execute(
               array($_REQUEST['morada'], $_REQUEST['codigo'], $_REQUEST['codigo_espaco'])
             );
+            echo "<p>Inserção feita com sucesso!</p>";
 
             $db->commit();
           } catch (PDOException $e) {
@@ -41,13 +42,14 @@
             echo "<p>{$e->getMessage()}</p>";
           }
         } else {
-          echo <<<__FORM
-<form method="post">
-  <p>Código: <input type="text" name="codigo" required /></p>
-  <p>Foto: <input type="text" name="foto"/></p>
-  <input type="submit" value="Inserir"/>
-</form>
-__FORM;
+          echo "
+      <form method=\"post\">
+        <p>Código: <input type=\"text\" name=\"codigo\" required /></p>
+        <p>Foto: <input type=\"text\" name=\"foto\"/></p>
+        <input type=\"hidden\" name=\"morada\" value=\"".$_REQUEST['morada']."\"/>
+        <input type=\"hidden\" name=\"codigo_espaco\" value=\"".$_REQUEST['codigo_espaco']."\"/>
+        <input type=\"submit\" value=\"Inserir\"/>
+      </form>";
         }
 
         $db = null;
