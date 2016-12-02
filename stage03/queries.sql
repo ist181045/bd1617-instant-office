@@ -21,16 +21,16 @@ WHERE (morada, codigo) NOT IN (
 
 -- b) Quais edifícios com um número de reservas superior à média?
 
-SELECT DISTINCT morada
+SELECT morada
 FROM (
-  SELECT DISTINCT morada, COUNT(1) AS c1
+  SELECT morada, COUNT(1) AS c1
   FROM Aluga
   GROUP BY morada
 ) AS A
 WHERE c1 > (
   SELECT AVG(c2)
   FROM (
-    SELECT DISTINCT morada, COUNT(1) AS c2
+    SELECT morada, COUNT(1) AS c2
     FROM Aluga
     GROUP BY morada
   ) AS Avg
@@ -44,7 +44,7 @@ WHERE c1 > (
 SELECT nif, nome
 FROM User
   NATURAL JOIN (
-    SELECT DISTINCT nif, COUNT(1) AS c
+    SELECT nif, COUNT(1) AS c
     FROM (
       SELECT DISTINCT nif, id
       FROM Arrenda NATURAL JOIN Fiscaliza
@@ -103,9 +103,9 @@ FROM (
 
 -- e.2) Com multiplicação/produto (join explícito)
 
-SELECT DISTINCT PT.morada, PT.codigo_espaco AS codigo
+SELECT PT.morada, PT.codigo_espaco AS codigo
 FROM (
-  SELECT DISTINCT P1.morada, P1.codigo_espaco, COUNT(1) AS c
+  SELECT P1.morada, P1.codigo_espaco, COUNT(1) AS c
   FROM Posto P1, Aluga A, (
     SELECT DISTINCT E.numero
     FROM Estado E
@@ -117,7 +117,7 @@ FROM (
   GROUP BY P1.morada, P1.codigo_espaco
 ) AS PA,
 (
-  SELECT DISTINCT P2.morada, P2.codigo_espaco, COUNT(1) AS c
+  SELECT P2.morada, P2.codigo_espaco, COUNT(1) AS c
   FROM Posto P2
   GROUP BY P2.morada, P2.codigo_espaco
 ) AS PT
