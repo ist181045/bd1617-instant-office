@@ -33,7 +33,7 @@
         echo "</tr></thead><tbody>";
 
         foreach($objs as $obj) {
-          $str = http_build_query(array($obj['morada'], $obj['codigo'], $obj['data_inicio']));
+          $str = "morada={$obj['morada']}&codigo={$obj['codigo']}&data_inicio={$obj['data_inicio']}";
           echo "<tr>";
           echo "<td>{$obj['morada']}</td>";
           echo "<td>{$obj['codigo']}</td>";
