@@ -14,17 +14,15 @@ DROP TRIGGER IF EXISTS TRG_Aluga_reserva_sobre_oferta;
 DROP TRIGGER IF EXISTS TRG_Edificio_delete;
 DROP TRIGGER IF EXISTS TRG_Espaco_delete_alugavel;
 DROP TRIGGER IF EXISTS TRG_Espaco_delete_posto;
-DROP TRIGGER IF EXISTS TRG_Espaco_insert_alugavel;
 DROP TRIGGER IF EXISTS TRG_Oferta_dates_overlap;
 DROP TRIGGER IF EXISTS TRG_Paga_state_timestamp;
-DROP TRIGGER IF EXISTS TRG_Posto_insert_alugavel;
 DROP TRIGGER IF EXISTS TRG_Posto_delete_alugavel;
 DROP TRIGGER IF EXISTS TRG_Reserva_estado_inicial;
 
 
 -- RI-1: "Nao podem existir ofertas com datas sobrepostas"
 
-DELIMITER //
+DELIMITER $
 
 CREATE TRIGGER TRG_Oferta_dates_overlap
 BEFORE INSERT ON Oferta
@@ -32,7 +30,7 @@ FOR EACH ROW
   BEGIN
 
     IF New.data_inicio > New.data_fim
-      THEN CALL exception_date ();
+      THEN CALL exception_begining_date_gt_end_date ();
     END IF;
 
     IF EXISTS (
@@ -46,14 +44,14 @@ FOR EACH ROW
       THEN CALL exception_dates_overlap ();
   	END IF;
 
-  END //
+  END $
 
 DELIMITER ;
 
 -- RI-2: "A data de pagamento de uma reserva paga tem que ser superior ao
 --        timestamp do ultimo estado da reserva"
 
-DELIMITER //
+DELIMITER $
 
 CREATE TRIGGER TRG_Paga_state_timestamp
 BEFORE INSERT ON Paga
@@ -72,7 +70,7 @@ FOR EACH ROW
         INSERT INTO Estado(numero, estado) VALUES(New.numero, 'Paga');
     END IF;
 
-  END //
+  END $
 
 DELIMITER ;
 
@@ -82,7 +80,7 @@ DELIMITER ;
 
 -- Insert an initial state of reservation after insertion in 'Reserva'
 
-DELIMITER //
+DELIMITER $
 
 CREATE TRIGGER TRG_Reserva_estado_inicial
 AFTER INSERT ON Reserva
@@ -91,13 +89,13 @@ FOR EACH ROW
 
     INSERT INTO Estado(numero, estado) VALUES(New.numero, 'Aceite');
 
-  END //
+  END $
 
 DELIMITER ;
 
 -- Create a reservation of a rentable space or office
 
-DELIMITER //
+DELIMITER $
 
 CREATE TRIGGER TRG_Aluga_reserva_sobre_oferta
 BEFORE INSERT ON Aluga
@@ -106,13 +104,13 @@ FOR EACH ROW
 
     INSERT INTO Reserva(numero) VALUES(New.numero);
 
-  END //
+  END $
 
 DELIMITER ;
 
 -- Remove building's spaces
 
-DELIMITER //
+DELIMITER $
 
 CREATE TRIGGER TRG_Edificio_delete
 BEFORE DELETE ON Edificio
@@ -121,13 +119,13 @@ FOR EACH ROW
 
     DELETE FROM Espaco WHERE morada = Old.morada;
 
-  END //
+  END $
 
 DELIMITER ;
 
 -- Remove spaces' offices
 
-DELIMITER //
+DELIMITER $
 
 CREATE TRIGGER TRG_Espaco_delete_posto
 BEFORE DELETE ON Espaco
@@ -136,13 +134,13 @@ FOR EACH ROW
 
     DELETE FROM Posto WHERE morada = Old.morada AND codigo_espaco = Old.codigo;
 
-  END //
+  END $
 
 DELIMITER ;
 
 -- Remove space from 'Alugavel'
 
-DELIMITER //
+DELIMITER $
 
 CREATE TRIGGER TRG_Espaco_delete_alugavel
 AFTER DELETE ON Espaco
@@ -151,13 +149,13 @@ FOR EACH ROW
 
     DELETE FROM Alugavel WHERE morada = Old.morada AND codigo = Old.codigo;
 
-  END //
+  END $
 
 DELIMITER ;
 
 -- Remove office from 'Alugavel'
 
-DELIMITER //
+DELIMITER $
 
 CREATE TRIGGER TRG_Posto_delete_alugavel
 AFTER DELETE ON Posto
@@ -166,6 +164,6 @@ FOR EACH ROW
 
     DELETE FROM Alugavel WHERE morada = Old.morada and codigo = Old.codigo;
 
-  END //
+  END $
 
 DELIMITER ;
