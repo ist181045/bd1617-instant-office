@@ -22,6 +22,12 @@
         $db = new PDO("mysql:host=$dbhost;dbname=$dbname;", $dbuser, $dbpass);
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+        if (isset($_REQUEST['morada'])) {
+          $stmt = $db->prepare("DELETE FROM Posto
+            WHERE morada = ? AND codigo = ? AND codigo_espaco = ?");
+          $stmt->execute(array($_REQUEST['morada'], $_REQUEST['codigo'], $_REQUEST['codigo_espaco']));
+        }
+
         $result = $db->query("SELECT * FROM Posto");
         $objs = $result->fetchAll(PDO::FETCH_ASSOC);
         $result = null;
