@@ -32,7 +32,7 @@ FROM (
       SELECT morada, COUNT(1) AS c2
       FROM Aluga
       GROUP BY morada
-    ) AS C
+    ) AS Avg
   )
 ) AS R;
 
