@@ -80,38 +80,7 @@ DELIMITER ;
 
 -- OTHER TRIGGERS
 
--- Insert space in 'Alugavel' before insertion in 'Espaco'
-
-DELIMITER //
-
-CREATE TRIGGER TRG_Espaco_insert_alugavel
-BEFORE INSERT ON Espaco
-FOR EACH ROW
-  BEGIN
-
-    INSERT INTO Alugavel(morada, codigo) VALUES(New.morada, New.codigo);
-
-  END //
-
-DELIMITER ;
-
-
--- Insert office in 'Alugavel' before insertion in 'Posto'
-
-DELIMITER //
-
-CREATE TRIGGER TRG_Posto_insert_alugavel
-BEFORE INSERT ON Posto
-FOR EACH ROW
-  BEGIN
-
-    INSERT INTO Alugavel(morada, codigo) VALUES(New.morada, New.codigo);
-
-  END //
-
-DELIMITER ;
-
--- Insert a state of reservation after insertion in 'Reserva'
+-- Insert an initial state of reservation after insertion in 'Reserva'
 
 DELIMITER //
 
