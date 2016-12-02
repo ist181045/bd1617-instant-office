@@ -41,16 +41,17 @@ WHERE c1 > (
 -- c) Quais utilizadores cujos alugáveis foram fiscalizados sempre pelo mesmo
 --    fiscal?
 
-SELECT DISTINCT nif, nome
+SELECT nif, nome
 FROM User
-WHERE (nif, 1) in (
-  SELECT DISTINCT nif, count(1) AS c
-  FROM (
-    SELECT DISTINCT nif, id
-    FROM Arrenda NATURAL JOIN Fiscaliza
-  ) AS R
-  GROUP BY nif
-);
+  NATURAL JOIN (
+    SELECT DISTINCT nif, count(1) AS c
+    FROM (
+      SELECT DISTINCT nif, id
+      FROM Arrenda NATURAL JOIN Fiscaliza
+    ) AS C
+    GROUP BY nif
+    HAVING c = 1
+) AS R;
 
 
 
@@ -59,7 +60,7 @@ WHERE (nif, 1) in (
 --    considerados os espaços em que o espaço foi alugado totalmente ou por
 --    postos)
 
-SELECT morada, codigo_espaco, 
+SELECT morada, codigo_espaco,
   SUM(tarifa * DATEDIFF(data_fim, data_inicio)) AS montante_total
 FROM Oferta
   NATURAL JOIN Aluga
@@ -89,7 +90,7 @@ FROM (
     NATURAL JOIN Aluga
     NATURAL JOIN (
       SELECT DISTINCT numero
-      FROM Estado 
+      FROM Estado
       WHERE estado = 'Aceite'
     ) AS R
   GROUP BY morada, codigo_espaco
