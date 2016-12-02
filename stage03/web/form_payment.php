@@ -25,10 +25,10 @@
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
           try {
             $db->beginTransaction();
-            $ins_alugavel = $db->prepare("INSERT INTO Paga VALUES (?, ?, ?)");
+            $ins_alugavel = $db->prepare("INSERT INTO Paga VALUES (?, CURRENT_TIMESTAMP, ?)");
 
             $ins_alugavel->execute(
-              array($_REQUEST['numero'], time(), $_REQUEST['método']));
+              array($_REQUEST['numero'], $_REQUEST['método']));
 
             echo "<p>Inserção feita com sucesso!</p>";
 
