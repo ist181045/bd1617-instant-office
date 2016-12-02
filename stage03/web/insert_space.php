@@ -36,7 +36,7 @@
           $str = "morada={$obj['morada']}";
           echo "<tr>";
           echo "<td>{$obj['morada']}</td>";
-          echo "<td><a href=\"form_espaco.php?$str\">Inserir Espaco</a></td>";
+          echo "<td><a href=\"form_space.php?$str\">Inserir Espaco</a></td>";
           echo "</tr>";
         }
 

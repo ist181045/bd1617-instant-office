@@ -37,7 +37,7 @@
           echo "<tr>";
           echo "<td>{$obj['morada']}</td>";
           echo "<td>{$obj['codigo']}</td>";
-          echo "<td><a href=\"form_posto.php?$str\">Inserir Posto</a></td>";
+          echo "<td><a href=\"form_office.php?$str\">Inserir Posto</a></td>";
           echo "</tr>";
         }
 
