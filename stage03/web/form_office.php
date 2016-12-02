@@ -25,15 +25,20 @@
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
           try {
             $db->beginTransaction();
-            $ins_alugavel = $db->prepare("INSERT INTO Alugavel VALUES (?, ?, ?)");
-            $ins_posto = $db->prepare("INSERT INTO Posto VALUES (?, ?, ?)");
 
-            $ins_alugavel->execute(
+            $stmt_alugavel = $db->prepare("INSERT INTO Alugavel VALUES (?, ?, ?)");
+            $stmt_posto = $db->prepare("INSERT INTO Posto VALUES (?, ?, ?)");
+
+            $stmt_alugavel->execute(
               array($_REQUEST['morada'], $_REQUEST['codigo'], $_REQUEST['foto'])
             );
-            $ins_posto->execute(
+            $stmt_alugavel = null;
+
+            $stmt_posto->execute(
               array($_REQUEST['morada'], $_REQUEST['codigo'], $_REQUEST['codigo_espaco'])
             );
+            $stmt_posto = null;
+            
             echo "<p>Inserção feita com sucesso!</p>";
 
             $db->commit();

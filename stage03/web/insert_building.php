@@ -25,9 +25,11 @@
         if ($_SERVER['REQUEST_METHOD'] === "POST") {
           try {
             $db->beginTransaction();
-            $ins_edificio = $db->prepare("INSERT INTO Edificio VALUES (?)");
 
-            $ins_edificio->execute(array($_REQUEST['morada']));
+            $stmt = $db->prepare("INSERT INTO Edificio VALUES (?)");
+            $stmt->execute(array($_REQUEST['morada']));
+            $stmt = null;
+            
             echo "<p>Inserção feita com sucesso!</p>";
 
             $db->commit();
