@@ -26,15 +26,15 @@ FROM (
   SELECT morada, COUNT(1) AS c1
   FROM Aluga
   GROUP BY morada
-) AS A
-WHERE c1 > (
-  SELECT AVG(c2)
-  FROM (
-    SELECT morada, COUNT(1) AS c2
-    FROM Aluga
-    GROUP BY morada
-  ) AS Avg
-);
+  HAVING c1 > (
+    SELECT AVG(c2)
+    FROM (
+      SELECT morada, COUNT(1) AS c2
+      FROM Aluga
+      GROUP BY morada
+    ) AS C
+  )
+) AS R;
 
 
 
@@ -48,10 +48,10 @@ FROM User
     FROM (
       SELECT DISTINCT nif, id
       FROM Arrenda NATURAL JOIN Fiscaliza
-    ) AS C
+    ) AS J
     GROUP BY nif
     HAVING c = 1
-) AS R;
+  ) AS R;
 
 
 
