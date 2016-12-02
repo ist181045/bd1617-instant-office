@@ -41,7 +41,7 @@
       <li>Posto</li>
       <ul>
         <li><a href="insert_office.php">Inserir</a></li>
-        <li><a href="insert_office.php">Remover</a></li>
+        <li><a href="remove_office.php">Remover</a></li>
       </ul>
     </ul>
 
