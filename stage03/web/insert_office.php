@@ -33,7 +33,7 @@
         echo "</tr></thead><tbody>";
 
         foreach($objs as $obj) {
-          $str = "morada={$obj['morada']}&codigo={$obj['codigo']}";
+          $str = "morada={$obj['morada']}&codigo_espaco={$obj['codigo']}";
           echo "<tr>";
           echo "<td>{$obj['morada']}</td>";
           echo "<td>{$obj['codigo']}</td>";
