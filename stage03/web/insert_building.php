@@ -11,10 +11,10 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Instant Office - Detalhes Edificio</title>
+    <title>Instant Office - Detalhes do Edificio</title>
   </head>
   <body>
-    <h1>Detalhes Edificio</h1>
+    <h1>Detalhes do Edificio</h1>
     <?php
       include_once("secret/login.php");
 
@@ -22,27 +22,26 @@
         $db = new PDO("mysql:host=$dbhost;dbname=$dbname;", $dbuser, $dbpass);
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        if (isset($_REQUEST['morada'])) {
+        if ($_SERVER['REQUEST_METHOD'] === "POST") {
           try {
             $db->beginTransaction();
-            $stm = $db->prepare("INSERT INTO Alugavel VALUES (?)");
+            $ins_edificio = $db->prepare("INSERT INTO Edificio VALUES (?)");
 
-            $stm->execute(array($_REQUEST['morada'])
-            );
+            $ins_edificio->execute(array($_REQUEST['morada']));
+            echo "<p>Inserção feita com sucesso!</p>";
 
             $db->commit();
           } catch (PDOException $e) {
             $db->rollBack();
-            echo "<p>{$e->getMessage()}</p>";
+            echo "<p>PDOException: {$e->getMessage()}</p>";
           }
+        } else {
+          echo "
+            <form method=\"post\">
+              <p>Morada: <input type=\"text\" name=\"morada\" required /></p>
+              <input type=\"submit\" value=\"Inserir\"/>
+            </form>";
         }
-
-
-          echo "Morada: <input type="text" name="morada" required />";
-          echo "<p></p>";
-
-          $str = "morada=$morada";
-          echo "<td><a href=\"index_building.php?$str\">Inserir Edificio</a></td>";
 
         $db = null;
 
