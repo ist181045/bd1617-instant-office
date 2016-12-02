@@ -53,7 +53,8 @@
       }
 
      ?>
-    <a href="#">Voltar ao Início</a>
+    <br>
+    <a href=\"index.php?$str\">Voltar ao Inicio</a>";
     <br><br>
     <footer>Copyright &copy; 2016 <?php echo date("Y") > 2016 ? " - ".date("Y") : ""; ?></footer>
   </body>
