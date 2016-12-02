@@ -52,7 +52,7 @@ CREATE TABLE Arrenda (
   codigo VARCHAR(255) NOT NULL,
   nif    VARCHAR(9)   NOT NULL,
   PRIMARY KEY(morada, codigo),
-  FOREIGN KEY(morada, codigo) REFERENCES Alugavel(morada, codigo) ON DELETE CASCADE,
+  FOREIGN KEY(morada, codigo) REFERENCES Alugavel(morada, codigo),
   FOREIGN KEY(nif) REFERENCES User(nif)
 );
 
@@ -62,7 +62,7 @@ CREATE TABLE Fiscaliza (
   codigo VARCHAR(255) NOT NULL,
   PRIMARY KEY(id, morada, codigo),
   FOREIGN KEY(id) REFERENCES Fiscal(id),
-  FOREIGN KEY(morada, codigo) REFERENCES Arrenda(morada, codigo) ON DELETE CASCADE
+  FOREIGN KEY(morada, codigo) REFERENCES Arrenda(morada, codigo)
 );
 
 CREATE TABLE Espaco (
@@ -88,7 +88,7 @@ CREATE TABLE Oferta (
   data_fim    DATE          NOT NULL,
   tarifa      NUMERIC(19,4) NOT NULL,
   PRIMARY KEY(morada, codigo, data_inicio),
-  FOREIGN KEY(morada, codigo) REFERENCES Alugavel(morada, codigo) ON DELETE CASCADE
+  FOREIGN KEY(morada, codigo) REFERENCES Alugavel(morada, codigo)
 );
 
 CREATE TABLE Reserva (
@@ -104,7 +104,7 @@ CREATE TABLE Aluga (
   numero      VARCHAR(255) NOT NULL,
   PRIMARY KEY(morada, codigo, data_inicio, nif, numero),
   FOREIGN KEY(morada, codigo, data_inicio)
-    REFERENCES Oferta(morada, codigo, data_inicio) ON DELETE CASCADE,
+    REFERENCES Oferta(morada, codigo, data_inicio),
   FOREIGN KEY(nif) REFERENCES User(nif),
   FOREIGN KEY(numero) REFERENCES Reserva(numero)
 );
