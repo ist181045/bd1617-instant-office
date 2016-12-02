@@ -65,7 +65,7 @@ FOR EACH ROW
         AND New.numero = numero
       )
       THEN
-        CALL exception_date_timestamp ();
+        CALL exception_date_lt_last_state_timestamp ();
       ELSE
         INSERT INTO Estado(numero, estado) VALUES(New.numero, 'Paga');
     END IF;
