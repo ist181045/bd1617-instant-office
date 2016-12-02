@@ -89,7 +89,7 @@ AFTER INSERT ON Reserva
 FOR EACH ROW
   BEGIN
 
-    INSERT INTO Estado(numero, estado) VALUES(New.numero, 'Pendente');
+    INSERT INTO Estado(numero, estado) VALUES(New.numero, 'Aceite');
 
   END //
 
