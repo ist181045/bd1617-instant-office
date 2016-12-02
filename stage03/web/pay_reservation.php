@@ -40,7 +40,7 @@
           echo "<td>{$obj['data_inicio']}</td>";
           echo "<td>{$obj['nif']}</td>";
           echo "<td>{$obj['numero']}</td>";
-          echo "<td><a href=\"form_offer.php?$str\">Pagar Reserva</a></td>";
+          echo "<td><a href=\"form_payment.php?$str\">Pagar Reserva</a></td>";
           echo "</tr>";
         }
 
