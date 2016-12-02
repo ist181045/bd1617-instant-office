@@ -3,9 +3,6 @@
  * BD225179 16'17
  *
  * @author Corpo Docente de BD225179
- * @author Rui Ventura (ist181045)
- * @author Diogo Freitas (ist181586)
- * @author Sara Azinhal (ist181700)
  */
 
 -- Drop tables, if they exist (rebuild schema)
@@ -116,7 +113,7 @@ CREATE TABLE Aluga (
 
 CREATE TABLE Paga (
   numero VARCHAR(255) NOT NULL UNIQUE,
-  data   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  data   TIMESTAMP    NOT NULL,
   metodo VARCHAR(255) NOT NULL,
   PRIMARY KEY(numero),
   FOREIGN KEY(numero) REFERENCES Reserva(numero)
@@ -124,7 +121,7 @@ CREATE TABLE Paga (
 
 CREATE TABLE Estado (
   numero     VARCHAR(255) NOT NULL,
-  time_stamp TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  time_stamp TIMESTAMP    NOT NULL,
   estado     VARCHAR(255) NOT NULL,
   PRIMARY KEY(numero, time_stamp),
   FOREIGN KEY(numero) REFERENCES Reserva(numero)
