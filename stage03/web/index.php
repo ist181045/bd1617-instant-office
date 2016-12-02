@@ -25,7 +25,7 @@
       <li>Reservas</li>
       <ul>
         <li><a href="create_reservation.php">Criar</a></li>
-        <li><a href="pay_reservation.php">Remover</a></li>
+        <li><a href="pay_reservation.php">Pagar</a></li>
       </ul>
       <li>Edifício</li>
       <ul>
