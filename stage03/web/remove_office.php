@@ -26,6 +26,8 @@
           $stmt = $db->prepare("DELETE FROM Posto
             WHERE morada = ? AND codigo = ? AND codigo_espaco = ?");
           $stmt->execute(array($_REQUEST['morada'], $_REQUEST['codigo'], $_REQUEST['codigo_espaco']));
+
+          echo "<p>Remoção feita com sucesso!</p>";
         }
 
         $result = $db->query("SELECT * FROM Posto");
@@ -49,10 +51,6 @@
         }
 
         echo "</tbody></table>";
-
-        if (isset($_REQUEST['morada'])) {
-          echo "<p>Remoção feita com sucesso!</p>";
-        }
 
         $db = null;
 

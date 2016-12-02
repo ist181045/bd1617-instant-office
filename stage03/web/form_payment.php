@@ -30,7 +30,7 @@
             $ins_alugavel->execute(
               array($_REQUEST['numero'], $_REQUEST['metodo']));
 
-            echo "<p>Inserção feita com sucesso!</p>";
+            echo "<p>Pagamento feito com sucesso!</p>";
 
             $db->commit();
           } catch (PDOException $e) {
