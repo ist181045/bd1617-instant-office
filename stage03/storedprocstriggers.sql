@@ -61,11 +61,12 @@ FOR EACH ROW
     IF EXISTS (
       SELECT 1
       FROM Estado
-      WHERE New.data < time_stamp
-        AND New.numero = numero
+      WHERE New.numero = numero
+        AND (New.data < time_stamp
+          OR estado = 'Paga')
       )
       THEN
-        CALL exception_date_lt_last_state_timestamp ();
+        CALL exception_paid_or_date_lt_last_state_timestamp ();
       ELSE
         INSERT INTO Estado(numero, estado) VALUES(New.numero, 'Paga');
     END IF;
