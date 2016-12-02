@@ -26,6 +26,8 @@
           $stmt = $db->prepare("DELETE FROM Espaco
             WHERE morada = ? AND codigo = ?");
           $stmt->execute(array($_REQUEST['morada'], $_REQUEST['codigo']));
+
+          echo "<p>Remoção feita com sucesso!</p>";
         }
 
         $result = $db->query("SELECT * FROM Espaco");

@@ -26,6 +26,8 @@
           $stmt = $db->prepare("DELETE FROM Oferta
             WHERE morada = ? AND codigo = ? AND data_inicio = ? AND data_fim = ? AND tarifa = ?");
           $stmt->execute(array($_REQUEST['morada'], $_REQUEST['codigo'], $_REQUEST['data_inicio'], $_REQUEST['data_fim'], $_REQUEST['tarifa']));
+
+          echo "<p>Remoção feita com sucesso!</p>";
         }
 
         $result = $db->query("SELECT * FROM Oferta");
