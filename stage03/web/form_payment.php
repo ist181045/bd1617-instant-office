@@ -28,7 +28,7 @@
             $ins_alugavel = $db->prepare("INSERT INTO Paga VALUES (?, CURRENT_TIMESTAMP, ?)");
 
             $ins_alugavel->execute(
-              array($_REQUEST['numero'], $_REQUEST['método']));
+              array($_REQUEST['numero'], $_REQUEST['metodo']));
 
             echo "<p>Inserção feita com sucesso!</p>";
 
@@ -40,7 +40,7 @@
         } else {
           echo "
             <form method=\"post\">
-              <p>Método: <input type=\"text\" name=\"método\" required /></p>
+              <p>Método: <input type=\"text\" name=\"metodo\" required /></p>
               <input type=\"hidden\" name=\"numero\" value=\"".$_REQUEST['numero']."\"/>
               <input type=\"submit\" value=\"Pagar\"/>
             </form>";
