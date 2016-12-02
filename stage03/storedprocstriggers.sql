@@ -31,17 +31,17 @@ BEFORE INSERT ON Oferta
 FOR EACH ROW
   BEGIN
 
-    IF NEW.data_inicio > New.data_fim
+    IF New.data_inicio > New.data_fim
       THEN CALL exception_date ();
     END IF;
 
     IF EXISTS (
       SELECT 1
       FROM Oferta
-      WHERE NEW.morada = morada
-        AND NEW.codigo = codigo
-        AND data_inicio < NEW.data_fim
-        AND NEW.data_inicio < data_fim
+      WHERE New.morada = morada
+        AND New.codigo = codigo
+        AND data_inicio < New.data_fim
+        AND New.data_inicio < data_fim
       )
       THEN CALL exception_dates_overlap ();
   	END IF;
@@ -63,13 +63,13 @@ FOR EACH ROW
     IF EXISTS (
       SELECT 1
       FROM Estado
-      WHERE NEW.data < time_stamp
-        AND NEW.numero = numero
+      WHERE New.data < time_stamp
+        AND New.numero = numero
       )
       THEN
         CALL exception_date_timestamp ();
       ELSE
-        INSERT INTO Estado(numero, estado) VALUES(NEW.numero, 'Paga');
+        INSERT INTO Estado(numero, estado) VALUES(New.numero, 'Paga');
     END IF;
 
   END //
@@ -89,7 +89,7 @@ BEFORE INSERT ON Espaco
 FOR EACH ROW
   BEGIN
 
-    INSERT INTO Alugavel(morada, codigo) VALUES(NEW.morada, NEW.codigo);
+    INSERT INTO Alugavel(morada, codigo) VALUES(New.morada, New.codigo);
 
   END //
 
@@ -105,7 +105,7 @@ BEFORE INSERT ON Posto
 FOR EACH ROW
   BEGIN
 
-    INSERT INTO Alugavel(morada, codigo) VALUES(NEW.morada, NEW.codigo);
+    INSERT INTO Alugavel(morada, codigo) VALUES(New.morada, New.codigo);
 
   END //
 
@@ -120,7 +120,7 @@ AFTER INSERT ON Reserva
 FOR EACH ROW
   BEGIN
 
-    INSERT INTO Estado(numero, estado) VALUES(NEW.numero, 'Pendente');
+    INSERT INTO Estado(numero, estado) VALUES(New.numero, 'Pendente');
 
   END //
 
@@ -135,7 +135,7 @@ BEFORE INSERT ON Aluga
 FOR EACH ROW
   BEGIN
 
-    INSERT INTO Reserva(numero) VALUES(NEW.numero);
+    INSERT INTO Reserva(numero) VALUES(New.numero);
 
   END //
 
@@ -150,7 +150,7 @@ BEFORE DELETE ON Edificio
 FOR EACH ROW
   BEGIN
 
-    DELETE FROM Espaco WHERE morada = old.morada;
+    DELETE FROM Espaco WHERE morada = Old.morada;
 
   END //
 
@@ -165,7 +165,7 @@ BEFORE DELETE ON Espaco
 FOR EACH ROW
   BEGIN
 
-    DELETE FROM Posto WHERE morada = old.morada AND codigo_espaco = old.codigo;
+    DELETE FROM Posto WHERE morada = Old.morada AND codigo_espaco = Old.codigo;
 
   END //
 
@@ -180,7 +180,7 @@ AFTER DELETE ON Espaco
 FOR EACH ROW
   BEGIN
 
-    DELETE FROM Alugavel WHERE morada = old.morada AND codigo = old.codigo;
+    DELETE FROM Alugavel WHERE morada = Old.morada AND codigo = Old.codigo;
 
   END //
 
@@ -195,7 +195,7 @@ AFTER DELETE ON Posto
 FOR EACH ROW
   BEGIN
 
-    DELETE FROM Alugavel WHERE morada = old.morada and codigo = old.codigo;
+    DELETE FROM Alugavel WHERE morada = Old.morada and codigo = Old.codigo;
 
   END //
 
