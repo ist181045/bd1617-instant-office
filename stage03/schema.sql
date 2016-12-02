@@ -8,7 +8,8 @@
  * @author Sara Azinhal (ist181700)
  */
 
-/* Drop tables, if they exist (rebuild schema) */
+-- Drop tables, if they exist (rebuild schema)
+
 DROP TABLE IF EXISTS Estado;
 DROP TABLE IF EXISTS Paga;
 DROP TABLE IF EXISTS Aluga;
@@ -23,7 +24,8 @@ DROP TABLE IF EXISTS Edificio;
 DROP TABLE IF EXISTS Fiscal;
 DROP TABLE IF EXISTS User;
 
-/* Start building */
+-- Start creating tables
+
 CREATE TABLE User (
   nif      VARCHAR(9)   NOT NULL UNIQUE,
   nome     VARCHAR(80)  NOT NULL,
