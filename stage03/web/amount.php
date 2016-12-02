@@ -9,20 +9,45 @@
 
 <!DOCTYPE html>
 <html>
+<?php $title = isset($_REQUEST['morada']) ? ucfirst($_REQUEST['morada']) : "Escolha um Edifício" ?>
   <head>
     <meta charset="utf-8">
-    <title>Instant Office - Escolha um Edificio</title>
+    <title>Instant Office - <?php echo $title; ?></title>
   </head>
   <body>
-    <h1>Escolha um Edificio</h1>
+    <h1><?php echo $title; ?></h1>
     <?php
       include_once("secret/login.php");
 
       try {
         $db = new PDO("mysql:host=$dbhost;dbname=$dbname;", $dbuser, $dbpass);
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $result = null;
 
-        $result = $db->query("SELECT * FROM Edificio");
+        if (isset($_REQUEST['morada'])) {
+          $stmt = $db->prepare("SELECT codigo_espaco as codigo,
+            SUM(tarifa * DATEDIFF(data_fim, data_inicio)) AS `montante total`
+          FROM Oferta
+            NATURAL JOIN Aluga
+            NATURAL JOIN Paga
+            NATURAL JOIN (
+              SELECT morada, codigo, codigo_espaco
+              FROM Alugavel NATURAL JOIN Posto
+              UNION
+              SELECT morada, codigo, codigo AS codigo_espaco
+              FROM Alugavel NATURAL JOIN Espaco
+            ) AS A
+          WHERE morada = :morada
+          GROUP BY codigo_espaco;");
+
+          $stmt->bindParam(":morada", $_REQUEST['morada'], PDO::PARAM_STR);
+          $stmt->execute();
+          $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } else {
+          $result = $db->query("SELECT * FROM Edificio");
+        }
+
         $objs = $result->fetchAll(PDO::FETCH_ASSOC);
         $result = null;
 
@@ -33,10 +58,16 @@
         echo "</tr></thead><tbody>";
 
         foreach($objs as $obj) {
-          $str = "morada={$obj['morada']}";
           echo "<tr>";
-          echo "<td>{$obj['morada']}</td>";
-          echo "<td><a href=\"amount.php?$str\">Ver total por espaco</a></td>";
+          if(isset($_REQUEST['morada'])) {
+            $str = "morada={$obj['morada']}";
+            echo "<td>{$obj['codigo']}</td>";
+            echo "<td>{$obj['montante_total']}</td>";
+          } else {
+            $str = "morada={$obj['morada']}";
+            echo "<td>{$obj['morada']}</td>";
+            echo "<td><a href=\"amount.php?$str\">Ver total por espaco</a></td>";
+          }
           echo "</tr>";
         }
 
@@ -49,6 +80,7 @@
       }
 
      ?>
+    <br>
     <a href="#">Voltar ao Início</a>
     <br><br>
     <footer>Copyright &copy; 2016 <?php echo date("Y") > 2016 ? " - ".date("Y") : ""; ?></footer>
