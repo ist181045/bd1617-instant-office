@@ -26,6 +26,8 @@
           $stmt = $db->prepare("DELETE FROM Edificio
             WHERE morada = ?");
           $stmt->execute(array($_REQUEST['morada']));
+
+          echo "<p>Remoção feita com sucesso!</p>";
         }
 
         $result = $db->query("SELECT * FROM Edificio");
