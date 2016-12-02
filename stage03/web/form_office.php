@@ -39,17 +39,17 @@
             $db->commit();
           } catch (PDOException $e) {
             $db->rollBack();
-            echo "<p>{$e->getMessage()}</p>";
+            echo "<p>PDOException: {$e->getMessage()}</p>";
           }
         } else {
           echo "
-      <form method=\"post\">
-        <p>Código: <input type=\"text\" name=\"codigo\" required /></p>
-        <p>Foto: <input type=\"text\" name=\"foto\"/></p>
-        <input type=\"hidden\" name=\"morada\" value=\"".$_REQUEST['morada']."\"/>
-        <input type=\"hidden\" name=\"codigo_espaco\" value=\"".$_REQUEST['codigo_espaco']."\"/>
-        <input type=\"submit\" value=\"Inserir\"/>
-      </form>";
+            <form method=\"post\">
+              <p>Código: <input type=\"text\" name=\"codigo\" required /></p>
+              <p>Foto: <input type=\"text\" name=\"foto\"/></p>
+              <input type=\"hidden\" name=\"morada\" value=\"".$_REQUEST['morada']."\"/>
+              <input type=\"hidden\" name=\"codigo_espaco\" value=\"".$_REQUEST['codigo_espaco']."\"/>
+              <input type=\"submit\" value=\"Inserir\"/>
+            </form>";
         }
 
         $db = null;
