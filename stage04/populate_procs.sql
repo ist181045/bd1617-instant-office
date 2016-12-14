@@ -13,15 +13,21 @@ CREATE PROCEDURE load_date_dim()
 BEGIN
   DECLARE v_full_date DATETIME;
   SET v_full_date = '2016-01-01 00:00:00';
-  WHILE v_full_date < '2017-01-01 00:00:00' DO
+  WHILE v_full_date < '2018-01-01 00:00:00' DO
     INSERT INTO olap_Date_dim (
      date_id,
+     date_day,
+     date_week,
      date_month,
-     date_day
+     date_semester,
+     date_year
     ) VALUES (
-      MONTH(v_full_date) * 100 + DAY(v_full_date),
+      YEAR(v_full_date) * 10000 + MONTH(v_full_date) * 100 + DAY(v_full_date),
+      DAY(v_full_date),
+      WEEK(v_full_date),
       MONTH(v_full_date),
-      DAY(v_full_date)
+      CEIL(MONTH(v_full_date) / 6),
+      YEAR(v_full_date)
     );
     SET v_full_date = DATE_ADD(v_full_date, INTERVAL 1 DAY);
   END WHILE;
@@ -35,8 +41,8 @@ BEGIN
   WHILE v_full_time <= '23:59:00.0000' DO
     INSERT INTO olap_Time_dim (
      time_id,
-     time_hour,
-     time_minute
+     time_minute,
+     time_hour
     ) VALUES (
       HOUR(v_full_time) * 100 + MINUTE(v_full_time),
       HOUR(v_full_time),

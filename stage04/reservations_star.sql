@@ -24,39 +24,42 @@ CREATE TABLE olap_User_dim (
 );
 
 CREATE TABLE olap_Location_dim (
-  location_id   INTEGER(10)  UNIQUE NOT NULL,
-  address       VARCHAR(255) NOT NULL,
-  code_office   VARCHAR(255),
-  code_space    VARCHAR(255) NOT NULL,
+  location_id      INTEGER(10)  UNIQUE NOT NULL,
+  code_office      VARCHAR(255),
+  code_space       VARCHAR(255) NOT NULL,
+  address_building VARCHAR(255) NOT NULL,
   PRIMARY KEY(location_id)
 );
 
 CREATE TABLE olap_Date_dim (
-  date_id    INTEGER(8)  UNIQUE NOT NULL,
-  date_month INTEGER(2)  NOT NULL,
-  date_day   INTEGER(2)  NOT NULL,
+  date_id       INTEGER(8)  UNIQUE NOT NULL,
+  date_day      INTEGER(2)  NOT NULL,
+  date_week     INTEGER(2)  NOT NULL,
+  date_month    INTEGER(2)  NOT NULL,
+  date_semester INTEGER(1)  NOT NULL,
+  date_year     INTEGER(4)  NOT NULL,
   PRIMARY KEY(date_id)
 );
 CALL load_date_dim;
 
 CREATE TABLE olap_Time_dim (
   time_id     INTEGER(10) UNIQUE NOT NULL,
-  time_hour   INTEGER(2)  NOT NULL,
   time_minute INTEGER(2)  NOT NULL,
+  time_hour   INTEGER(2)  NOT NULL,
   PRIMARY KEY(time_id)
 );
 CALL load_time_dim;
 
 CREATE TABLE olap_Reservations (
-  user_id     INTEGER(10)   NOT NULL,
   location_id INTEGER(10)   NOT NULL,
   time_id     INTEGER(10)   NOT NULL,
   date_id     INTEGER(10)   NOT NULL,
+  user_id     INTEGER(10)   NOT NULL,
   amount      DECIMAL(19,4) NOT NULL,
   time_period INTEGER(3)    NOT NULL,
-  PRIMARY KEY(user_id, location_id, time_id, date_id),
-  FOREIGN KEY(user_id)     REFERENCES olap_User_dim(user_id),
+  PRIMARY KEY(location_id, time_id, date_id),
   FOREIGN KEY(location_id) REFERENCES olap_Location_dim(location_id),
   FOREIGN KEY(time_id)     REFERENCES olap_Time_dim(time_id),
-  FOREIGN KEY(date_id)     REFERENCES olap_Date_dim(date_id)
+  FOREIGN KEY(date_id)     REFERENCES olap_Date_dim(date_id),
+  FOREIGN KEY(user_id)     REFERENCES olap_User_dim(user_id)
 );
