@@ -23,7 +23,7 @@ CREATE TABLE olap_User_dim (
   PRIMARY KEY(user_id)
 );
 
-CREATE TABLE Locaolap_tion_dim (
+CREATE TABLE olap_Location_dim (
   location_id   INTEGER(10)  UNIQUE NOT NULL,
   morada        VARCHAR(255) NOT NULL,
   codigo_posto  VARCHAR(255),
