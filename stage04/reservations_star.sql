@@ -8,14 +8,14 @@
  */
 
 DROP TABLE if exists olap_Reservas;
-DROP TABLE if exists User_dim;
-DROP TABLE if exists Location_dim;
-DROP TABLE if exists Date_dim;
-DROP TABLE if exists Time_dim;
+DROP TABLE if exists olap_User_dim;
+DROP TABLE if exists olap_Location_dim;
+DROP TABLE if exists olap_Date_dim;
+DROP TABLE if exists olap_Time_dim;
 
 SOURCE populate_procs.sql;
 
-CREATE TABLE User_dim (
+CREATE TABLE olap_User_dim (
   user_id  INTEGER(10) UNIQUE NOT NULL AUTO_INCREMENT,
   nif      VARCHAR(9)  NOT NULL,
   nome     VARCHAR(80) NOT NULL,
@@ -23,7 +23,7 @@ CREATE TABLE User_dim (
   PRIMARY KEY(user_id)
 );
 
-CREATE TABLE Location_dim (
+CREATE TABLE Locaolap_tion_dim (
   location_id   INTEGER(10)  UNIQUE NOT NULL,
   morada        VARCHAR(255) NOT NULL,
   codigo_posto  VARCHAR(255),
@@ -31,7 +31,7 @@ CREATE TABLE Location_dim (
   PRIMARY KEY(location_id)
 );
 
-CREATE TABLE Date_dim (
+CREATE TABLE olap_Date_dim (
   date_id    INTEGER(8)  UNIQUE NOT NULL,
   date_mes   INTEGER(2)  NOT NULL,
   date_dia   INTEGER(2)  NOT NULL,
@@ -39,7 +39,7 @@ CREATE TABLE Date_dim (
 );
 CALL load_date_dim;
 
-CREATE TABLE Time_dim (
+CREATE TABLE olap_Time_dim (
   time_id     INTEGER(10) UNIQUE NOT NULL,
   time_hora   INTEGER(2)  NOT NULL,
   time_minuto INTEGER(2)  NOT NULL,
