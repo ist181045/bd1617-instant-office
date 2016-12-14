@@ -14,7 +14,7 @@ BEGIN
   DECLARE v_full_date DATETIME;
   SET v_full_date = '2016-01-01 00:00:00';
   WHILE v_full_date < '2017-01-01 00:00:00' DO
-    INSERT INTO Date_dim (
+    INSERT INTO olap_Date_dim (
      date_id,
      date_mes,
      date_dia
@@ -33,7 +33,7 @@ BEGIN
   DECLARE v_full_time TIME;
   SET v_full_time = '00:00:00.0000';
   WHILE v_full_time <= '23:59:00.0000' DO
-    INSERT INTO Time_dim (
+    INSERT INTO olap_Time_dim (
      time_id,
      time_hora,
      time_minuto
