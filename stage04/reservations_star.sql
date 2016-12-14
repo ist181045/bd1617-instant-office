@@ -13,6 +13,8 @@ DROP TABLE if exists Location_dim;
 DROP TABLE if exists Date_dim;
 DROP TABLE if exists Time_dim;
 
+SOURCE populate_procs.sql;
+
 CREATE TABLE User_dim (
   user_id  INTEGER(10) UNIQUE NOT NULL AUTO_INCREMENT,
   nif      VARCHAR(9)  NOT NULL,
@@ -35,6 +37,7 @@ CREATE TABLE Date_dim (
   date_dia   INTEGER(2)  NOT NULL,
   PRIMARY KEY(date_id)
 );
+CALL load_date_dim;
 
 CREATE TABLE Time_dim (
   time_id     INTEGER(10) UNIQUE NOT NULL,
@@ -42,6 +45,7 @@ CREATE TABLE Time_dim (
   time_minuto INTEGER(2)  NOT NULL,
   PRIMARY KEY(time_id)
 );
+CALL load_time_dim;
 
 CREATE TABLE olap_Reservas (
   user_id     INTEGER(10)   NOT NULL,
