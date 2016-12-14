@@ -55,8 +55,8 @@ CREATE TABLE olap_Reservas (
   montante    DECIMAL(19,4) NOT NULL,
   duracao     INTEGER(3)    NOT NULL,
   PRIMARY KEY(user_id, location_id, time_id, date_id),
-  FOREIGN KEY(user_id)     REFERENCES User_dim(user_id),
-  FOREIGN KEY(location_id) REFERENCES Location_dim(location_id),
-  FOREIGN KEY(time_id)     REFERENCES Time_dim(time_id),
-  FOREIGN KEY(date_id)     REFERENCES Date_dim(date_id)
+  FOREIGN KEY(user_id)     REFERENCES olap_User_dim(user_id),
+  FOREIGN KEY(location_id) REFERENCES olap_Location_dim(location_id),
+  FOREIGN KEY(time_id)     REFERENCES olap_Time_dim(time_id),
+  FOREIGN KEY(date_id)     REFERENCES olap_Date_dim(date_id)
 );
