@@ -16,8 +16,8 @@ BEGIN
   WHILE v_full_date < '2017-01-01 00:00:00' DO
     INSERT INTO olap_Date_dim (
      date_id,
-     date_mes,
-     date_dia
+     date_month,
+     date_day
     ) VALUES (
       MONTH(v_full_date) * 100 + DAY(v_full_date),
       MONTH(v_full_date),
@@ -35,8 +35,8 @@ BEGIN
   WHILE v_full_time <= '23:59:00.0000' DO
     INSERT INTO olap_Time_dim (
      time_id,
-     time_hora,
-     time_minuto
+     time_hour,
+     time_minute
     ) VALUES (
       HOUR(v_full_time) * 100 + MINUTE(v_full_time),
       HOUR(v_full_time),
