@@ -7,7 +7,7 @@
  * @author Sara Azinhal (ist181700)
  */
 
-DROP TABLE if exists olap_Reservas;
+DROP TABLE if exists olap_Reservations;
 DROP TABLE if exists olap_User_dim;
 DROP TABLE if exists olap_Location_dim;
 DROP TABLE if exists olap_Date_dim;
@@ -47,7 +47,7 @@ CREATE TABLE olap_Time_dim (
 );
 CALL load_time_dim;
 
-CREATE TABLE olap_Reservas (
+CREATE TABLE olap_Reservations (
   user_id     INTEGER(10)   NOT NULL,
   location_id INTEGER(10)   NOT NULL,
   time_id     INTEGER(10)   NOT NULL,
