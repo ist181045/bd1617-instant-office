@@ -22,6 +22,7 @@ CREATE TABLE olap_User_dim (
   phone    VARCHAR(26) NOT NULL,
   PRIMARY KEY(user_id)
 );
+CALL load_user_dim;
 
 CREATE TABLE olap_Location_dim (
   location_id      INTEGER(10)  UNIQUE NOT NULL,
@@ -30,14 +31,15 @@ CREATE TABLE olap_Location_dim (
   address_building VARCHAR(255) NOT NULL,
   PRIMARY KEY(location_id)
 );
+CALL load_location_dim;
 
 CREATE TABLE olap_Date_dim (
-  date_id       INTEGER(8)  UNIQUE NOT NULL,
-  date_day      INTEGER(2)  NOT NULL,
-  date_week     INTEGER(2)  NOT NULL,
-  date_month    INTEGER(2)  NOT NULL,
-  date_semester INTEGER(1)  NOT NULL,
-  date_year     INTEGER(4)  NOT NULL,
+  date_id       INTEGER(8) UNIQUE NOT NULL,
+  date_day      INTEGER(2) NOT NULL,
+  date_week     INTEGER(2) NOT NULL,
+  date_month    INTEGER(2) NOT NULL,
+  date_semester INTEGER(1) NOT NULL,
+  date_year     INTEGER(4) NOT NULL,
   PRIMARY KEY(date_id)
 );
 CALL load_date_dim;
@@ -63,3 +65,4 @@ CREATE TABLE olap_Reservations (
   FOREIGN KEY(date_id)     REFERENCES olap_Date_dim(date_id),
   FOREIGN KEY(user_id)     REFERENCES olap_User_dim(user_id)
 );
+CALL load_reservations;

@@ -7,6 +7,9 @@
 
 DROP PROCEDURE IF EXISTS load_date_dim;
 DROP PROCEDURE IF EXISTS load_time_dim;
+DROP PROCEDURE IF EXISTS load_location_dim;
+DROP PROCEDURE IF EXISTS load_user_dim;
+DROP PROCEDURE IF EXISTS load_reservations;
 
 DELIMITER $$
 CREATE PROCEDURE load_date_dim()
@@ -50,6 +53,24 @@ BEGIN
     );
     SET v_full_time = ADDTIME(v_full_time, '00:01:0.0000');
   END WHILE;
+END;
+$$
+
+CREATE PROCEDURE load_location_dim()
+BEGIN
+-- TODO
+END;
+$$
+
+CREATE PROCEDURE load_user_dim()
+BEGIN
+-- TODO
+END;
+$$
+
+CREATE PROCEDURE load_reservations()
+BEGIN
+-- TO *fucking* DO
 END;
 $$
 
