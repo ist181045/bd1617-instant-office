@@ -3,6 +3,9 @@
  * BD225179 16'17
  *
  * @author Corpo Docente de BD225179
+ * @author Rui Ventura (ist181045)
+ * @author Diogo Freitas (ist181586)
+ * @author Sara Azinhal (ist181700)
  */
 
 DROP PROCEDURE IF EXISTS load_date_dim;
@@ -66,19 +69,75 @@ BEGIN
     SELECT morada
     FROM Edificio;
 END;
-$$
-
-CREATE PROCEDURE load_user_dim()
-BEGIN
+$$	
+	
+CRE	ATE PROCEDURE load_user_dim()
+BEG	IN
   INSERT INTO olap_User_dim(nif, name, phone)
     SELECT nif, nome, telefone
     FROM User;
 END;
 $$
 
-CREATE PROCEDURE load_reservations()
+CREATE PROCEDURE load_space_reservations()
 BEGIN
--- TODO
+  INSERT INTO olap_Reservations (
+    location_id, 
+    time_id, 
+    date_id, 
+    user_id, 
+    amount, 
+    time_period)
+      SELECT LD.location_id,TD.time_id, DD.date_id, UD.user_id, ( tarifa * DIFFDATE(O.data_inicio, O.data_fim) ) as amount, DIFFDATE(O.data_inicio, O.data_fim) as time_period)
+      FROM (SELECT *
+            FROM Reserva R
+              NATURAL JOIN Espaco E
+              NATURAL JOIN Oferta O
+              NATURAL JOIN Aluga A)
+        INNER JOIN olap_Location_dim LD
+        INNER JOIN olap_Time_dim TD
+        INNER JOIN olap_Date_dim DD
+        INNER JOIN olap_User_dim UD
+          ON  LD.address_building = E.morada
+          AND LD.code_space       = E.codigo
+          AND LD.code_office      IS NULL
+          AND TD.time_hour        = HOUR(O.data_inicio)
+          AND TD.time_minute      = MINUTE(O.data_inicio)
+          AND DD.date_year        = YEAR(O.data_inicio)
+          AND DD.date_month       = MONTH(O.data_inicio)
+          AND DD.date_day         = DAY(O.data_inicio)
+          AND UD.nif              = A.nif;
+END;
+$$
+
+CREATE PROCEDURE load_office_reservations()
+BEGIN
+  INSERT INTO olap_Reservations (
+    location_id, 
+    time_id, 
+    date_id, 
+    user_id, 
+    amount, 
+    time_period)
+      SELECT LD.location_id,TD.time_id, DD.date_id, UD.user_id, ( tarifa * DIFFDATE(O.data_inicio, O.data_fim) ) as amount, DIFFDATE(O.data_inicio, O.data_fim) as time_period)
+      FROM (SELECT *
+            FROM Reserva R
+              NATURAL JOIN Posto P
+              NATURAL JOIN Oferta O
+              NATURAL JOIN Aluga A)
+        INNER JOIN olap_Location_dim LD
+        INNER JOIN olap_Time_dim TD
+        INNER JOIN olap_Date_dim DD
+        INNER JOIN olap_User_dim UD
+          ON  LD.address_building = P.morada
+          AND LD.code_space       = P.codigo_espaco
+          AND LD.code_office      = P.codigo
+          AND TD.time_hour        = HOUR(O.data_inicio)
+          AND TD.time_minute      = MINUTE(O.data_inicio)
+          AND DD.date_year        = YEAR(O.data_inicio)
+          AND DD.date_month       = MONTH(O.data_inicio)
+          AND DD.date_day         = DAY(O.data_inicio)
+          AND UD.nif              = A.nif;
 END;
 $$
 

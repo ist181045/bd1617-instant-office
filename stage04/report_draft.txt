@@ -1,57 +1,83 @@
+BD Instant Office
+BD225179 16'17
+
+Rui Ventura (ist181045)
+Diogo Freitas (ist181586)
+Sara Azinhal (ist181700)
+
 - Indices
 
 a) Indique, justificando, que tipo de índice(s), sobre que atributo(s) e 
     sobre que tabela(s) faria sentido criar de modo a acelerar a execução 
     destas interrogações.
 
-1. Quais os utilizadores cujos espaços foram fiscalizados sempre pelo mesmo
-   fiscal?
+  1. Quais os utilizadores cujos espaços foram fiscalizados sempre pelo mesmo
+     fiscal?
 
-  Morada, Código – HASH: Desagrupado / Denso em Arrenda e Fiscaliza
-  nif – BTREE: Agrupado / Esparso em Arrenda
+    Morada, Código – HASH: Desagrupado / Denso em Arrenda e Fiscaliza
+    nif – BTREE: Agrupado / Esparso em Arrenda
 
-2. Quais os espaços com postos que nunca foram alugados?
+  2. Quais os espaços com postos que nunca foram alugados?
 
-  Morada, Código – HASH: Desagrupado / Denso em Posto e Aluga
-  Morada, Código_Espaço – HASH: Desagrupado / Denso em Posto
-  Estado – HASH: Desagrupado / Denso em Estado
-  Número – HASH: Desagrupado / Denso em Aluga e Estado
+    Morada, Código – HASH: Desagrupado / Denso em Posto e Aluga
+    Morada, Código_Espaço – HASH: Desagrupado / Denso em Posto
+    Estado – HASH: Desagrupado / Denso em Estado
+    Número – HASH: Desagrupado / Denso em Aluga e Estado
+
 
 b) Crie o(s) índice(s) em SQL, se necessário. Examine o plano de execução 
-  obtido para cada uma das queries e justifique. 
+  obtido para cada uma das queries e justifique.
 
-Para
+O MySQL cria automaticamente um indice para FK. De forma a obter o plano de 
+execução sem indíces, primeiro é necessário removê-los.
 
-Primeiro - Listar nomes das Foreign Keys (para obter o nome dos índices que são gerados 
-  automáticamente. NOTA: Diferente de show index, onde só aparece 'FK' e nao o nome)
-          SHOW CREATE TABLE  <Table Name>
-
+Passos:
+Primeiro - Listar nomes das Foreign Keys (para obter o nome dos índices que são 
+  gerados automáticamente. NOTA: Diferente de show index, onde só aparece 'FK' 
+  e nao o nome)
+  "SHOW CREATE TABLE  <Table Name>"
 Segundo - Drop Foreign Key
-          ALTER TABLE <Table Name> DROP FOREIGN KEY <Foreign Key Name>
-
+  "ALTER TABLE <Table Name> DROP FOREIGN KEY <Foreign Key Name>"
 Terceiro - Drop index.
-          ALTER TABLE <Table Name> DROP INDEX <Foreign Key Name>
+  "ALTER TABLE <Table Name> DROP INDEX <Foreign Key Name>"
 ou
-          DROP INDEX <Index Name> ON <Table Name>
+  "DROP INDEX <Index Name> ON <Table Name>"
 
+Examinmos os planos e tempos de execução das duas queries, 
+"EXPLAIN <Query>"
+"SET PROFILING = 1" + "<Query>" + "SET PROFILING = 0" + "SHOW PROFILES"
+
+De seguida adicionamos os índices escolhidos na alínea anterior
+  "CREATE INDEX <Index Name> ON <Table Name>"
+
+E voltamos a examinar os planos e tempos de execução das queries.
 
 --------------------------------------------------------------------------------
 
 - DATA WAREHOUSE
 
-2. Considerando o esquema da estrela criado em (1), escreva uma consulta OLAP em SQL 
-  para obter o cubo com valor médio pago sobre as dimensões localização e data
+1. Escreva as instruções SQL necessárias para carregar o esquema em estrela a 
+  partir das tabelas existentes. Os registos das dimensões data e tempo devem 
+  ser gerados automaticamente.
 
-select L.address_building, L.code_space, L.code_office,
-  D.date_month, D.date_day, AVG(R.amount) as average_amount
+  Esquema em estrela - reservations_star.sql
+  Carregar o esquema - populate_procs.sql
 
-from olap_Reservations R
-  inner join olap_Location_dim L
-  inner join olap_Date_dim D
-  on R.location_id = L.location_id
-  and R.date_id = L.date_id
 
-group by grouping sets (
+2. Considerando o esquema da estrela criado em (1), escreva uma consulta OLAP 
+  em SQL para obter o cubo com valor médio pago sobre as dimensões localização 
+  e data, considerando apenas os níveis:
+  - "espaço" e "posto", da dimensão localização; 
+  - "dia" e "mês", da dimensão data;
+
+SELECT L.address_building, L.code_space, L.code_office,
+  D.date_month, D.date_day, AVG(R.amount) AS average_amount
+FROM olap_Reservations R
+  INNER JOIN olap_Location_dim L
+  INNER JOIN olap_Date_dim D
+  ON R.location_id = L.location_id
+  AND R.date_id = L.date_id
+GROUP BY GROUPING SETS (
   (R.location_id, R.date_id),
   (R.date_id, R.location_id),
   (R.location_id),
@@ -59,24 +85,22 @@ group by grouping sets (
   ()
 );
 
+--------------------------------------------------------------------------------
+QUERIES
 
+1.  select A.nif
+    from Arrenda A
+      inner join Fiscaliza F
+      on A.morada = F.morada
+      and A.codigo = F.codigo
+    group by A.nif
+    having count(distinct F.id) = 1;
 
-
-
-select A.nif
-from Arrenda A
-  inner join Fiscaliza F
-  on A.morada = F.morada
-  and A.codigo = F.codigo
-group by A.nif
-having count(distinct F.id) = 1;
-
-select distinct P.morada, P.codigo_espaco
-from Posto P
-where (P.morada, P.codigo_espaco) not in (
-  select P.morada, P.codigo_espaco
-  from Posto P
-    natural join Aluga A
-    natural join Estado E
-  where E.estado = 'Aceite'
-);
+2.  select distinct P.morada, P.codigo_espaco
+    from Posto P
+    where (P.morada, P.codigo_espaco) not in (
+      select P.morada, P.codigo_espaco
+      from Posto P
+        natural join Aluga A
+        natural join Estado E
+      where E.estado = 'Aceite');
