@@ -65,5 +65,4 @@ CREATE TABLE olap_Reservations (
   FOREIGN KEY(date_id)     REFERENCES olap_Date_dim(date_id),
   FOREIGN KEY(user_id)     REFERENCES olap_User_dim(user_id)
 );
-CALL load_space_reservations();
-CALL load_office_reservations();
+CALL load_reservations();

@@ -47,8 +47,8 @@ BEGIN
       time_minute,
       time_hour
     ) VALUES (
-      HOUR(v_full_time),
-      MINUTE(v_full_time)
+      MINUTE(v_full_time),
+      HOUR(v_full_time)
     );
     SET v_full_time = ADDTIME(v_full_time, '00:01:0.0000');
   END WHILE;
@@ -69,75 +69,73 @@ BEGIN
     SELECT morada
     FROM Edificio;
 END;
-$$	
-	
-CRE	ATE PROCEDURE load_user_dim()
-BEG	IN
+$$
+
+CREATE PROCEDURE load_user_dim()
+BEGIN
   INSERT INTO olap_User_dim(nif, name, phone)
     SELECT nif, nome, telefone
     FROM User;
 END;
 $$
 
-CREATE PROCEDURE load_space_reservations()
+CREATE PROCEDURE load_reservations()
 BEGIN
-  INSERT INTO olap_Reservations (
-    location_id, 
-    time_id, 
-    date_id, 
-    user_id, 
-    amount, 
-    time_period)
-      SELECT LD.location_id,TD.time_id, DD.date_id, UD.user_id, ( tarifa * DIFFDATE(O.data_inicio, O.data_fim) ) as amount, DIFFDATE(O.data_inicio, O.data_fim) as time_period)
-      FROM (SELECT *
-            FROM Reserva R
-              NATURAL JOIN Espaco E
-              NATURAL JOIN Oferta O
-              NATURAL JOIN Aluga A)
-        INNER JOIN olap_Location_dim LD
-        INNER JOIN olap_Time_dim TD
-        INNER JOIN olap_Date_dim DD
-        INNER JOIN olap_User_dim UD
-          ON  LD.address_building = E.morada
-          AND LD.code_space       = E.codigo
-          AND LD.code_office      IS NULL
-          AND TD.time_hour        = HOUR(O.data_inicio)
-          AND TD.time_minute      = MINUTE(O.data_inicio)
-          AND DD.date_year        = YEAR(O.data_inicio)
-          AND DD.date_month       = MONTH(O.data_inicio)
-          AND DD.date_day         = DAY(O.data_inicio)
-          AND UD.nif              = A.nif;
-END;
-$$
+  DECLARE v_nif         VARCHAR(9);
+  DECLARE v_morada      VARCHAR(255);
+  DECLARE v_codigo      VARCHAR(255);
+  DECLARE v_data        TIMESTAMP;
+  DECLARE v_data_inicio DATE;
+  DECLARE v_data_fim    DATE;
+  DECLARE v_tarifa      DECIMAL(19,4);
 
-CREATE PROCEDURE load_office_reservations()
-BEGIN
-  INSERT INTO olap_Reservations (
-    location_id, 
-    time_id, 
-    date_id, 
-    user_id, 
-    amount, 
-    time_period)
-      SELECT LD.location_id,TD.time_id, DD.date_id, UD.user_id, ( tarifa * DIFFDATE(O.data_inicio, O.data_fim) ) as amount, DIFFDATE(O.data_inicio, O.data_fim) as time_period)
-      FROM (SELECT *
-            FROM Reserva R
-              NATURAL JOIN Posto P
-              NATURAL JOIN Oferta O
-              NATURAL JOIN Aluga A)
-        INNER JOIN olap_Location_dim LD
-        INNER JOIN olap_Time_dim TD
-        INNER JOIN olap_Date_dim DD
-        INNER JOIN olap_User_dim UD
-          ON  LD.address_building = P.morada
-          AND LD.code_space       = P.codigo_espaco
-          AND LD.code_office      = P.codigo
-          AND TD.time_hour        = HOUR(O.data_inicio)
-          AND TD.time_minute      = MINUTE(O.data_inicio)
-          AND DD.date_year        = YEAR(O.data_inicio)
-          AND DD.date_month       = MONTH(O.data_inicio)
-          AND DD.date_day         = DAY(O.data_inicio)
-          AND UD.nif              = A.nif;
+  DECLARE done INTEGER DEFAULT 0;
+  DECLARE cur CURSOR FOR
+    SELECT nif, morada, codigo, data, data_inicio, data_fim, tarifa
+    FROM Aluga NATURAL JOIN Paga NATURAL JOIN Oferta;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+  OPEN cur;
+  loop_lbl: LOOP
+    FETCH cur INTO v_nif, v_morada, v_codigo, v_data, v_data_inicio, v_data_fim, v_tarifa;
+    IF done THEN
+      LEAVE loop_lbl;
+    END IF;
+
+    INSERT INTO olap_Reservations (
+      location_id,
+      time_id,
+      date_id,
+      user_id,
+      amount,
+      time_period
+    ) VALUES (
+      (SELECT location_id
+       FROM olap_Location_dim
+       WHERE v_morada = address_building
+         AND (v_codigo = code_office
+           OR v_codigo = code_space AND code_office IS NULL)
+      ),
+      (SELECT time_id
+       FROM olap_Time_dim
+       WHERE HOUR(v_data)   = time_hour
+         AND MINUTE(v_data) = time_minute
+      ),
+      (SELECT date_id
+       FROM olap_Date_dim
+       WHERE YEAR(v_data)  = date_year
+         AND MONTH(v_data) = date_month
+         AND DAY(v_data)   = date_day
+      ),
+      (SELECT user_id
+       FROM olap_User_dim
+       WHERE v_nif = nif
+      ),
+      DATEDIFF(v_data_fim, v_data_inicio) * v_tarifa,
+      DATEDIFF(v_data_fim, v_data_inicio)
+    );
+  END LOOP;
+
 END;
 $$
 
