@@ -18,14 +18,12 @@ BEGIN
   SET v_full_date = '2016-01-01 00:00:00';
   WHILE v_full_date < '2018-01-01 00:00:00' DO
     INSERT INTO olap_Date_dim (
-     date_id,
-     date_day,
-     date_week,
-     date_month,
-     date_semester,
-     date_year
+      date_day,
+      date_week,
+      date_month,
+      date_semester,
+      date_year
     ) VALUES (
-      YEAR(v_full_date) * 10000 + MONTH(v_full_date) * 100 + DAY(v_full_date),
       DAY(v_full_date),
       WEEK(v_full_date),
       MONTH(v_full_date),
@@ -43,11 +41,9 @@ BEGIN
   SET v_full_time = '00:00:00.0000';
   WHILE v_full_time <= '23:59:00.0000' DO
     INSERT INTO olap_Time_dim (
-     time_id,
-     time_minute,
-     time_hour
+      time_minute,
+      time_hour
     ) VALUES (
-      HOUR(v_full_time) * 100 + MINUTE(v_full_time),
       HOUR(v_full_time),
       MINUTE(v_full_time)
     );
@@ -58,19 +54,31 @@ $$
 
 CREATE PROCEDURE load_location_dim()
 BEGIN
--- TODO
+  INSERT INTO olap_Location_dim(code_office, code_space, address_building)
+    SELECT codigo, codigo_espaco, morada
+    FROM Posto;
+
+  INSERT INTO olap_Location_dim(code_space, address_building)
+    SELECT codigo, morada
+    FROM Espaco;
+
+  INSERT INTO olap_Location_dim(address_building)
+    SELECT morada
+    FROM Edificio;
 END;
 $$
 
 CREATE PROCEDURE load_user_dim()
 BEGIN
--- TODO
+  INSERT INTO olap_User_dim(nif, name, phone)
+    SELECT nif, nome, telefone
+    FROM User;
 END;
 $$
 
 CREATE PROCEDURE load_reservations()
 BEGIN
--- TO *fucking* DO
+-- TODO
 END;
 $$
 
