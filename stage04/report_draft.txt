@@ -1,0 +1,61 @@
+- Indices
+
+1. Quais os utilizadores cujos espaços foram fiscalizados sempre pelo mesmo
+   fiscal?
+
+  a) Morada, Código – HASH: Desagrupado / Denso em Arrenda e Fiscaliza
+     nif – BTREE: Agrupado / Esparso em Arrenda
+
+  b) já
+
+2. Quais os espaços com postos que nunca foram alugados?
+
+  a) Morada, Código – HASH: Desagrupado / Denso em Posto e Aluga
+     Morada, Código_Espaço – HASH: Desagrupado / Denso em Posto
+     Estado – HASH: Desagrupado / Denso em Estado
+     Número – HASH: Desagrupado / Denso em Aluga e Estado
+
+  b)
+
+--------------------------------------------------------------------------------
+
+- DATA WAREHOUSE
+
+select L.address_building, L.code_space, L.code_office,
+  D.date_month, D.date_day, AVG(R.amount) as average_amount
+
+from olap_Reservations R
+  inner join olap_Location_dim L
+  inner join olap_Date_dim D
+  on R.location_id = L.location_id
+  and R.date_id = L.date_id
+
+group by grouping sets (
+  (R.location_id, R.date_id),
+  (R.date_id, R.location_id),
+  (R.location_id),
+  (R.date_id),
+  ()
+);
+
+
+
+
+
+select A.nif
+from Arrenda A
+  inner join Fiscaliza F
+  on A.morada = F.morada
+  and A.codigo = F.codigo
+group by A.nif
+having count(distinct F.id) = 1;
+
+select distinct P.morada, P.codigo_espaco
+from Posto P
+where (P.morada, P.codigo_espaco) not in (
+  select P.morada, P.codigo_espaco
+  from Posto P
+    natural join Aluga A
+    natural join Estado E
+  where E.estado = 'Aceite'
+);
