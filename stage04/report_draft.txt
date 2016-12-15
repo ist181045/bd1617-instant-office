@@ -1,25 +1,46 @@
 - Indices
 
+a) Indique, justificando, que tipo de índice(s), sobre que atributo(s) e 
+    sobre que tabela(s) faria sentido criar de modo a acelerar a execução 
+    destas interrogações.
+
 1. Quais os utilizadores cujos espaços foram fiscalizados sempre pelo mesmo
    fiscal?
 
-  a) Morada, Código – HASH: Desagrupado / Denso em Arrenda e Fiscaliza
-     nif – BTREE: Agrupado / Esparso em Arrenda
-
-  b) já
+  Morada, Código – HASH: Desagrupado / Denso em Arrenda e Fiscaliza
+  nif – BTREE: Agrupado / Esparso em Arrenda
 
 2. Quais os espaços com postos que nunca foram alugados?
 
-  a) Morada, Código – HASH: Desagrupado / Denso em Posto e Aluga
-     Morada, Código_Espaço – HASH: Desagrupado / Denso em Posto
-     Estado – HASH: Desagrupado / Denso em Estado
-     Número – HASH: Desagrupado / Denso em Aluga e Estado
+  Morada, Código – HASH: Desagrupado / Denso em Posto e Aluga
+  Morada, Código_Espaço – HASH: Desagrupado / Denso em Posto
+  Estado – HASH: Desagrupado / Denso em Estado
+  Número – HASH: Desagrupado / Denso em Aluga e Estado
 
-  b)
+b) Crie o(s) índice(s) em SQL, se necessário. Examine o plano de execução 
+  obtido para cada uma das queries e justifique. 
+
+Para
+
+Primeiro - Listar nomes das Foreign Keys (para obter o nome dos índices que são gerados 
+  automáticamente. NOTA: Diferente de show index, onde só aparece 'FK' e nao o nome)
+          SHOW CREATE TABLE  <Table Name>
+
+Segundo - Drop Foreign Key
+          ALTER TABLE <Table Name> DROP FOREIGN KEY <Foreign Key Name>
+
+Terceiro - Drop index.
+          ALTER TABLE <Table Name> DROP INDEX <Foreign Key Name>
+ou
+          DROP INDEX <Index Name> ON <Table Name>
+
 
 --------------------------------------------------------------------------------
 
 - DATA WAREHOUSE
+
+2. Considerando o esquema da estrela criado em (1), escreva uma consulta OLAP em SQL 
+  para obter o cubo com valor médio pago sobre as dimensões localização e data
 
 select L.address_building, L.code_space, L.code_office,
   D.date_month, D.date_day, AVG(R.amount) as average_amount
