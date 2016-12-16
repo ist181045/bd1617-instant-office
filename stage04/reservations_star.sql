@@ -7,11 +7,11 @@
  * @author Sara Azinhal (ist181700)
  */
 
-DROP TABLE if exists olap_Reservations;
-DROP TABLE if exists olap_User_dim;
-DROP TABLE if exists olap_Location_dim;
-DROP TABLE if exists olap_Date_dim;
-DROP TABLE if exists olap_Time_dim;
+DROP TABLE IF EXISTS olap_Reservations;
+DROP TABLE IF EXISTS olap_User_dim;
+DROP TABLE IF EXISTS olap_Location_dim;
+DROP TABLE IF EXISTS olap_Date_dim;
+DROP TABLE IF EXISTS olap_Time_dim;
 
 SOURCE populate_procs.sql;
 
