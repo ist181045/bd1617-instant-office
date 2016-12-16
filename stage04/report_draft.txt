@@ -7,8 +7,8 @@ Sara Azinhal (ist181700)
 
 - Indices
 
-a) Indique, justificando, que tipo de índice(s), sobre que atributo(s) e 
-    sobre que tabela(s) faria sentido criar de modo a acelerar a execução 
+a) Indique, justificando, que tipo de índice(s), sobre que atributo(s) e
+    sobre que tabela(s) faria sentido criar de modo a acelerar a execução
     destas interrogações.
 
   1. Quais os utilizadores cujos espaços foram fiscalizados sempre pelo mesmo
@@ -25,15 +25,15 @@ a) Indique, justificando, que tipo de índice(s), sobre que atributo(s) e
     Número – HASH: Desagrupado / Denso em Aluga e Estado
 
 
-b) Crie o(s) índice(s) em SQL, se necessário. Examine o plano de execução 
+b) Crie o(s) índice(s) em SQL, se necessário. Examine o plano de execução
   obtido para cada uma das queries e justifique.
 
-O MySQL cria automaticamente um indice para FK. De forma a obter o plano de 
+O MySQL cria automaticamente um indice para FK. De forma a obter o plano de
 execução sem indíces, primeiro é necessário removê-los.
 
 Passos:
-Primeiro - Listar nomes das Foreign Keys (para obter o nome dos índices que são 
-  gerados automáticamente. NOTA: Diferente de show index, onde só aparece 'FK' 
+Primeiro - Listar nomes das Foreign Keys (para obter o nome dos índices que são
+  gerados automáticamente. NOTA: Diferente de show index, onde só aparece 'FK'
   e nao o nome)
   "SHOW CREATE TABLE  <Table Name>"
 Segundo - Drop Foreign Key
@@ -43,7 +43,7 @@ Terceiro - Drop index.
 ou
   "DROP INDEX <Index Name> ON <Table Name>"
 
-Examinmos os planos e tempos de execução das duas queries, 
+Examinmos os planos e tempos de execução das duas queries,
 "EXPLAIN <Query>"
 "SET PROFILING = 1" + "<Query>" + "SET PROFILING = 0" + "SHOW PROFILES"
 
@@ -56,34 +56,70 @@ E voltamos a examinar os planos e tempos de execução das queries.
 
 - DATA WAREHOUSE
 
-1. Escreva as instruções SQL necessárias para carregar o esquema em estrela a 
-  partir das tabelas existentes. Os registos das dimensões data e tempo devem 
+1. Escreva as instruções SQL necessárias para carregar o esquema em estrela a
+  partir das tabelas existentes. Os registos das dimensões data e tempo devem
   ser gerados automaticamente.
 
   Esquema em estrela - reservations_star.sql
   Carregar o esquema - populate_procs.sql
 
 
-2. Considerando o esquema da estrela criado em (1), escreva uma consulta OLAP 
-  em SQL para obter o cubo com valor médio pago sobre as dimensões localização 
+2. Considerando o esquema da estrela criado em (1), escreva uma consulta OLAP
+  em SQL para obter o cubo com valor médio pago sobre as dimensões localização
   e data, considerando apenas os níveis:
-  - "espaço" e "posto", da dimensão localização; 
+  - "espaço" e "posto", da dimensão localização;
   - "dia" e "mês", da dimensão data;
 
-SELECT L.address_building, L.code_space, L.code_office,
-  D.date_month, D.date_day, AVG(R.amount) AS average_amount
-FROM olap_Reservations R
-  INNER JOIN olap_Location_dim L
-  INNER JOIN olap_Date_dim D
-  ON R.location_id = L.location_id
-  AND R.date_id = L.date_id
-GROUP BY GROUPING SETS (
-  (R.location_id, R.date_id),
-  (R.date_id, R.location_id),
-  (R.location_id),
-  (R.date_id),
-  ()
-);
+  SELECT date_month, date_day, code_space, code_office, AVG(amount)
+  FROM olap_Reservations
+    NATURAL JOIN olap_Date_dim
+    NATURAL JOIN olap_Location_dim
+  GROUP BY date_month, date_day, code_space, code_office
+  WITH ROLLUP
+
+  UNION
+
+  SELECT date_month, date_day, code_space, code_office, AVG(amount)
+  FROM olap_Reservations
+    NATURAL JOIN olap_Date_dim
+    NATURAL JOIN olap_Location_dim
+  GROUP BY date_day, code_space, code_office, date_month
+  WITH ROLLUP
+
+  UNION
+
+  SELECT date_month, date_day, code_space, code_office, AVG(amount)
+  FROM olap_Reservations
+    NATURAL JOIN olap_Date_dim
+    NATURAL JOIN olap_Location_dim
+  GROUP BY code_space, code_office, date_month, date_day
+  WITH ROLLUP
+
+  UNION
+
+  SELECT date_month, date_day, code_space, code_office, AVG(amount)
+  FROM olap_Reservations
+    NATURAL JOIN olap_Date_dim
+    NATURAL JOIN olap_Location_dim
+  GROUP BY code_office, date_month, date_day, code_space
+  WITH ROLLUP
+
+  UNION
+
+  SELECT date_month, date_day, code_space, code_office, AVG(amount)
+  FROM olap_Reservations
+    NATURAL JOIN olap_Date_dim
+    NATURAL JOIN olap_Location_dim
+  GROUP BY date_month, code_space
+
+  UNION
+
+  SELECT date_month, date_day, code_space, code_office, AVG(amount)
+  FROM olap_Reservations
+    NATURAL JOIN olap_Date_dim
+    NATURAL JOIN olap_Location_dim
+  GROUP BY date_day, code_office
+  ORDER BY date_month, date_day, code_space, code_office;
 
 --------------------------------------------------------------------------------
 QUERIES
